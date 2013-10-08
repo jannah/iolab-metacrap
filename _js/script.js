@@ -8,12 +8,16 @@ $(document).ready(function() {
 });
 function init() {
     test();
+    eventSubmitTweet();
+    updateTweetCount();
+    logonToTwitter();
 }
 var MY_TAGS_COLUMN = "#my-tags-column ul";
 var MY_MENTIONS_COLUMN = "#my-metnions-column ul";
 var FRIENDS_TAGS_COLUMN = "#friend-tags-column ul";
 var FRIENDS_mentions_COLUMN = "#friend-mentions-column ul";
 var TWEET_AREA_TEXT = "#tweet-text";
+var TWEET_LIMIT = 140;
 var TagListTypes = {Tags: "t", Mentions: "m"};
 function test() {
 
@@ -24,7 +28,6 @@ function test() {
     myMentions.addTag("@donjannah");
     myMentions.addTag("@test2");
     myMentions.addTag("@test2");
-
     console.log(myMentions);
     for (var key in myMentions.tags)
     {
@@ -72,7 +75,6 @@ function addItemToColumn(item, column) {
     $(column).append(itemHTML);
     $(column + " li:last").hide().fadeIn(500);
     eventAddItemToColumn();
-
 }
 
 function removeItemFromColumn(item, column) {
@@ -81,7 +83,7 @@ function removeItemFromColumn(item, column) {
 
 function appendTextToTweet(text) {
     var original_text = $("tweet-text").text();
-    if (original_text.indexOf(text) !== text)
+    if (original_text.indexOf(text) === text)
         $("tweet-text").text(original_text + " " + text);
     else
         alert(text + " already exists in tweet");
@@ -96,7 +98,7 @@ function eventAddItemToColumn()
         var text = $(this).text();
         console.log(text);
         console.log(original_text);
-        if (original_text.indexOf(text) !== -1 || original_text.length === 0)
+        if (original_text.indexOf(text) === -1 || original_text.length === 0)
         {
             if (original_text.length > 0)
                 text = " " + text;
@@ -104,6 +106,45 @@ function eventAddItemToColumn()
         }
         else
             alert(text + " already exists in tweet");
+    });
+}
+
+function eventSubmitTweet()
+{
+    $("#tweet-submit").click(function() {
+        var tweet = $("#tweet-text").text();
+        alert("Submitting tweet:\n" + tweet);
+    });
+}
+
+function updateTweetCount() {
+//     var tweet = $("#tweet-text").text();
+//     /var rem = (TWEET_LIMIT - tweet.length);
+//     $("#tweet-length-label").text(rem+" left");
+    var lbl = $("#tweet-length-label");
+    lbl.text(TWEET_LIMIT + " left");
+    $("#tweet-text").bind('input propertychange', function(event, previousText) {
+
+        var text = TWEET_LIMIT - parseInt($(this).val().length);
+//        console.log(text);
+        lbl.text(text + " left");
+        if (text < 0) {
+            lbl.css("color", "red");
+        }
+        else {
+            lbl.css("color", "black");
+        }
+
+    });
+}
+
+function logonToTwitter()
+{
+    $("#logon-submit").click(function() {
+        var username = $("#logon-username").val();
+        var password = $("#logon-password").val();
+
+        console.log(username + "\n" + password);
 
 
     });

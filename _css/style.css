@@ -68,8 +68,11 @@ body{
 
 }
 .suggestion-column ul{
-    padding:10px;
-
+    padding:0px 5px;
+}
+.suggestion-column li{
+    padding: 5px 0px;
+    border-bottom: 1px solid #DEEBF7;
 }
 
 #tweet-text{
