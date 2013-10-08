@@ -1,0 +1,83 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 7, 2013, 4:28:34 PM
+    Author     : Hassan
+*/
+
+h1{
+    font-size: x-large;
+    font-weight: bold;
+    color: #777;
+}
+
+body{
+
+    background-color:#DEEBF7;
+    font-family: 'Ropa Sans', sans-serif;
+}
+#container{
+    width:820px;
+    overflow: auto;
+    padding:10px;
+    background-color:white;
+    margin: 0px auto;
+    box-shadow: 2px;
+}
+#login-area, #tweet-area{
+    margin: 0px auto;
+    /*position: relative;*/
+    width: 600px;
+    display:block;
+    text-align: center;
+}
+#login-form,#tweet-form{
+    padding:10px;
+
+}
+.borders{
+    border: 1px solid #DEEBF7;
+}
+.area-header{
+    width:100%;
+    display:inline-block;
+    background-color: #DEEBF7;
+    vertical-align: middle;
+    line-height: 40px;
+    height:40px;
+    text-align: center;
+}
+
+.column-header{
+    display:inline-block;
+    padding:5px;
+    width:100%;
+
+    background-color: #1fa1fa;
+}
+
+.suggestion-column{
+
+    text-align: center;
+    display:inline-block;
+    float:left;
+    width:200px;
+
+}
+.suggestion-column ul{
+    padding:10px;
+
+}
+
+#tweet-text{
+    width:98%;
+    padding:5px;
+    height:60px;
+    vertical-align: text-top;
+    text-wrap: unrestricted;
+    
+    resize: none;
+}

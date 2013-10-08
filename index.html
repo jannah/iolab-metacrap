@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Tweet for Dummies!</title>
+        <script src="_js/jquery-1.10.2.min.js"></script>
+        <script src="_js/script.js"></script>
+
+        <link rel="stylesheet" type="text/css" href='_css/style.css'>
+        <link rel="stylesheet" type="text/css" href="_css/reset.css">
+        <!--<link href='http://fonts.googleapis.com/css?family=Ropa+Sans' rel='stylesheet' type='text/css'>-->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body> <div id="container">
+            <header>
+                Tweet for Dummies!
+            </header>
+            <main>
+
+                <br>
+                <div id="login-area" class="borders">
+                    <h1><label class="area-header">Login Area</label></h1>
+                    <form id="login-form">
+                        <input id="login-username" type="text" placeholder="Twitter username"/>
+                        <input id="login-password" type="password"/>
+                        <input id="logon-submit" type="submit" value="Login"/>
+                    </form>
+                </div>
+                <br>
+                <div id="tweet-area" class="borders">
+                    <h1><label class="area-header">Tweet Area</label></h1>
+                    <form id="tweet-form">
+                        <textarea id="tweet-text"  placeholder="Tweet!"></textarea>
+                        <input id="tweet-submit" type="submit" value="Tweet"/>
+                        <label id="tweet-length-label"></label>
+                    </form>
+                </div>
+                <br>
+                <div id="suggestion-area">
+
+                    <div class="suggestion-column borders" id="my-metnions-column">
+                        <label class="column-header">My Mentions</label>
+                        <ul>
+
+                        </ul>
+                    </div>
+
+                    <div class="suggestion-column borders" id="friend-metnions-column">
+                        <label class="column-header">Friends' Mentions</label>
+                        <ul>
+
+                        </ul>
+                    </div>
+
+                    <div class="suggestion-column borders" id="my-tags-column">
+                        <label class="column-header">My Hashtags</label>
+                        <ul>
+
+                        </ul>
+                    </div>
+
+                    <div class="suggestion-column borders" id="friend-tags-column">
+                        <label class="column-header">Friends' Hashtags</label>
+                        <ul>
+
+                        </ul>
+                    </div>
+                </div>
+
+
+            </main>
+            <footer>
+
+            </footer>
+        </div>
+    </body>
+</html>
