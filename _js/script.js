@@ -19,8 +19,6 @@ var FRIENDS_MENTIONS_COLUMN = "#friend-mentions-column";
 var TWEET_AREA_TEXT = "#tweet-text";
 var TWEET_LIMIT = 140;
 var TagListTypes = {Tags: "t", Mentions: "m"};
-
-
 function test() {
 
     var myMentions = new TagList();
@@ -30,11 +28,9 @@ function test() {
     myMentions.addTag("@donjannah");
     myMentions.addTag("@donjannah");
     myMentions.addTag("@donjannah");
-
     for (var i = 1; i <= 10; i++) {
         myMentions.addTag("@test-" + i);
         myMentions.tags["@test-" + i] = Math.floor((Math.random() * 20) + 1);
-
     }
 
 //    console.log(myMentions);
@@ -80,17 +76,13 @@ function sortTags()
 //    var sorted = {};
 
     var sorted = [];
-
     for (var key in this.tags)
         sorted.push([key, this.tags[key]]);
-
     sorted.sort(function(a, b) {
         a = a[1];
         b = b[1];
-
         return a > b ? -1 : (a < b ? 1 : 0);
     });
-
     console.log(sorted);
     this.tags = {};
     for (var i = 0; i < sorted.length; i++) {
@@ -194,7 +186,6 @@ function eventAppendItemToTweet()
         }
         else
             alert(text + " already exists in tweet");
-
         updateTweetCount();
     });
 }
@@ -215,14 +206,12 @@ function eventUpdateTweetCount() {
     lbl.text(TWEET_LIMIT + " left");
     $("#tweet-text").bind('input propertychange', function(event, previousText) {
         updateTweetCount();
-
     });
 }
 
 function updateTweetCount()
 {
     var lbl = $("#tweet-length-label");
-
     var text = TWEET_LIMIT - parseInt($("#tweet-text").val().length);
 //        console.log(text);
     lbl.text(text + " left");
@@ -235,13 +224,44 @@ function updateTweetCount()
 }
 function logonToTwitter()
 {
+    
+    
+    
+    /*
     $("#logon-submit").click(function() {
         var username = $("#logon-username").val();
         var password = $("#logon-password").val();
-
         console.log(username + "\n" + password);
-
-
+        var jqxhr = $.post(Twitter_Request_token_URL,
+        {
+        OAuth: oauth_nonce = "K7ny27JTpKVsTgdyLdDfmQQWVLERj2zAK5BslRsqyw",
+                oauth_callback = encodeURI(Twitter_Callback_URL),
+                oauth_signature_method = "HMAC-SHA1",
+                oauth_timestamp = "1300228849",
+                oauth_consumer_key = Twitter_Consumer_key,
+                oauth_signature = "Pc%2BMLdv028fxCErFyi8KXFM%2BddU%3D",
+                oauth_version = "1.0"
+    })
+            .done(function(msg) {
+                console.log("new link added");
+                $("#memex-form").find("input[type=text], textarea").val("");
+            })
+            .fail(function() {
+                alert("error");
+            });
     });
+    */
 }
+
+
+var Twitter_Access_level = "Read-only";
+var Twitter_Consumer_key = "hXbF1F2QUVnJcjqj8vUBQ";
+var Twitter_Consumer_secret = "BcdY1uVAPBYtncN0ksS7PHtvPPyXLHaSNpetLJdu8";
+var Twitter_Access_Token=  "22654218-QoAwLex61Qu43j7wfqli78SgnnuUm1oymDfDI9Gw";
+var Twitter_Access_Token_Secret = "qFxeo4S55CSHPHIAe9c0GBUTn7SSRADNZuIcnLUC5c";
+var Twitter_Request_token_URL = "https://api.twitter.com/oauth/request_token";
+var Twitter_Authorize_URL = "https://api.twitter.com/oauth/authorize";
+var Twitter_Access_token_URL = "https://api.twitter.com/oauth/access_token";
+var Twitter_Callback_URL = "http://people.ischool.berkeley.edu/~jannah/";
+
 
