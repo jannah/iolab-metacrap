@@ -13,6 +13,11 @@ h1{
     font-weight: bold;
     color: #777;
 }
+h2{
+    font-size:x-large;
+    font-weight: bolder;
+    
+}
 
 body{
 
@@ -52,11 +57,19 @@ body{
 }
 
 .column-header{
-    display:inline-block;
+    /*display:inline-block;*/
     padding:5px;
-    width:100%;
+ 
+    /*width:390px;*/
 
     background-color: #1fa1fa;
+}
+.suggestion-area{
+        margin: 0px auto;
+    /*position: relative;*/
+    width: 800px;
+    display:block;
+    text-align: center;
 }
 
 .suggestion-column{
@@ -64,15 +77,24 @@ body{
     text-align: center;
     display:inline-block;
     float:left;
-    width:200px;
+    width:380px;
+    padding:0px;
+    margin: 10px;
 
 }
-.suggestion-column ul{
-    padding:0px 5px;
+.suggestion-column label{
+    padding: 10px;
+    font-size: large;
+    text-align:center;
+    display: inline-block;
+    /*border-bottom: 1px solid #DEEBF7;*/
+    /*float: left;*/
 }
-.suggestion-column li{
-    padding: 5px 0px;
-    border-bottom: 1px solid #DEEBF7;
+
+
+.suggestion-column label:hover{
+    background-color:#DEEBF7;
+    cursor: pointer; cursor: hand;
 }
 
 #tweet-text{
@@ -80,7 +102,7 @@ body{
     padding:5px;
     height:60px;
     vertical-align: text-top;
-    text-wrap: unrestricted;
-    
+    text-wrap: unristricted;
+
     resize: none;
 }
