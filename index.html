@@ -25,46 +25,49 @@ and open the template in the editor.
                 Tweet for Dummies!
             </header>
             <main> 
+                <div id="submit-tweet-area">
+                    <br>
+                    <div id="login-area" class="borders">
+                        <h1><label class="area-header">Login Area</label></h1>
+                        <form id="login-form">
+                            <input id="logon-username" type="text" placeholder="Twitter username"/>
+                            <input id="logon-password" type="password"/>
+                            <input id="logon-submit" type="submit" value="Login"/>
+                        </form>
+                    </div>
+                    <br>
+                    <div id="tweet-area" class="borders">
+                        <h1><label class="area-header">Tweet Area</label></h1>
+                        <form id="tweet-form">
+                            <textarea id="tweet-text"  placeholder="Tweet!"></textarea>
+                            <input id="tweet-submit" type="submit" value="Tweet"/>
+                            <label id="tweet-length-label"></label>
+                        </form>
+                    </div>
+                    <br>
+                    <div id="suggestion-area">
 
-                <br>
-                <div id="login-area" class="borders">
-                    <h1><label class="area-header">Login Area</label></h1>
-                    <form id="login-form">
-                        <input id="logon-username" type="text" placeholder="Twitter username"/>
-                        <input id="logon-password" type="password"/>
-                        <input id="logon-submit" type="submit" value="Login"/>
-                    </form>
+                        <div class="suggestion-column borders" id="my-mentions-column">
+                            <div class="column-header"><h2>My Mentions</h2></div>
+
+                        </div>
+
+                        <div class="suggestion-column borders" id="friend-mentions-column">
+                            <div class="column-header"><h2>Friends' Mentions</h2></div>
+                        </div>
+
+                        <div class="suggestion-column borders" id="my-tags-column">
+                            <div class="column-header"><h2>My Hashtags</h2></div>
+                        </div>
+
+                        <div class="suggestion-column borders" id="friend-tags-column">
+                            <div class="column-header"><h2>Friends' Hashtags</h2></div>
+                        </div>
+                    </div>
                 </div>
-                <br>
-                <div id="tweet-area" class="borders">
-                    <h1><label class="area-header">Tweet Area</label></h1>
-                    <form id="tweet-form">
-                        <textarea id="tweet-text"  placeholder="Tweet!"></textarea>
-                        <input id="tweet-submit" type="submit" value="Tweet"/>
-                        <label id="tweet-length-label"></label>
-                    </form>
+                <div id="tweets-preview-area">
+<h1><label class="area-header">Preview</label></h1>
                 </div>
-                <br>
-                <div id="suggestion-area">
-
-                    <div class="suggestion-column borders" id="my-mentions-column">
-                        <div class="column-header"><h2>My Mentions</h2></div>
-
-                    </div>
-
-                    <div class="suggestion-column borders" id="friend-mentions-column">
-                        <div class="column-header"><h2>Friends' Mentions</h2></div>
-                    </div>
-
-                    <div class="suggestion-column borders" id="my-tags-column">
-                        <div class="column-header"><h2>My Hashtags</h2></div>
-                    </div>
-
-                    <div class="suggestion-column borders" id="friend-tags-column">
-                        <div class="column-header"><h2>Friends' Hashtags</h2></div>
-                    </div>
-                </div>
-
 
             </main>
             <footer>
