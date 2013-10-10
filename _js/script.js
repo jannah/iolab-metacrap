@@ -6,11 +6,14 @@
 $(document).ready(function() {
     init();
 });
+
 function init() {
     test();
     eventSubmitTweet();
     eventUpdateTweetCount();
     logonToTwitter();
+
+
 }
 var MY_TAGS_COLUMN = "#my-tags-column";
 var MY_MENTIONS_COLUMN = "#my-mentions-column";
@@ -19,34 +22,87 @@ var FRIENDS_MENTIONS_COLUMN = "#friend-mentions-column";
 var TWEET_AREA_TEXT = "#tweet-text";
 var TWEET_LIMIT = 140;
 var TagListTypes = {Tags: "t", Mentions: "m"};
-function test() {
 
-    var myMentions = new TagList();
-    myMentions.title = "My Mentions";
-    myMentions.column = MY_MENTIONS_COLUMN;
-    myMentions.type = TagListTypes.Mentions;
-    myMentions.addTag("@donjannah");
-    myMentions.addTag("@donjannah");
-    myMentions.addTag("@donjannah");
-    for (var i = 1; i <= 10; i++) {
-        myMentions.addTag("@test-" + i);
-        myMentions.tags["@test-" + i] = Math.floor((Math.random() * 20) + 1);
-    }
+function test()
+{
+    console.log("Testing");
+    var randomTweets = generateTweets(100);
+    addTweetsToPreview(randomTweets);
+    var loadedTagsMentions = loadHashagsAndMentionsFromTweets(randomTweets);
+//    var mentions = new TagList();
+//    var hashtags = new TagList();
+//    console.log(loadedTagsMentions);
+    var mentions = loadedTagsMentions.mentions;
+    var hashtags = loadedTagsMentions.hashtags;
 
-//    console.log(myMentions);
-    addTagCloudToColumn(myMentions.tags, FRIENDS_MENTIONS_COLUMN);
-    myMentions.sortTags();
-    for (var key in myMentions.tags)
-    {
-//        console.log("Adding " + key + "to " + myMentions.column);
-        addItemToColumn(key, myMentions.column);
-    }
+    mentions.sortTags();
+    hashtags.sortTags();
+    console.log(mentions);
+    console.log(hashtags);
+
+    mentions.column = FRIENDS_MENTIONS_COLUMN;
+    hashtags.column = FRIENDS_TAGS_COLUMN;
+//    mentions.addTagListToColumn();
+//    hashtags.addTagListToColumn();
+
+    addTagCloudToColumn(mentions.tags, mentions.column);
+    addTagCloudToColumn(hashtags.tags, hashtags.column);
+    /*
+     var myMentions = new TagList();
+     myMentions.title = "My Mentions";
+     myMentions.column = MY_MENTIONS_COLUMN;
+     myMentions.type = TagListTypes.Mentions;
+     myMentions.addTag("@donjannah");
+     myMentions.addTag("@donjannah");
+     myMentions.addTag("@donjannah");
+     for (var i = 1; i <= 10; i++) {
+     myMentions.addTag("@test-" + i);
+     myMentions.tags["@test-" + i] = Math.floor((Math.random() * 20) + 1);
+     }
+     
+     //    console.log(myMentions);
+     addTagCloudToColumn(myMentions.tags, FRIENDS_MENTIONS_COLUMN);
+     myMentions.sortTags();
+     for (var key in myMentions.tags)
+     {
+     //        console.log("Adding " + key + "to " + myMentions.column);
+     addItemToColumn(key, myMentions.column);
+     }
+     */
 
 
 
 
 }
 
+/**
+ * 
+ * @param {Array} tweets
+ * @returns {loadHashagsAndMentionsFromTweets.combined}
+ */
+function loadHashagsAndMentionsFromTweets(tweets)
+{
+    var hashtagList = new TagList();
+    hashtagList.title = 'Hashtag List';
+    hashtagList.type = 'hashtags';
+    var mentionsList = new TagList();
+    mentionsList.title = 'Mentions List';
+    mentionsList.type = 'mentions';
+    for (var i = 0, j = tweets.length; i < j; i++)
+    {
+        var tweet = new Tweet();
+        tweet = tweets[i];
+
+        for (var m = 0, l = tweet.user_mentions.length; m < l; m++)
+            mentionsList.addTag(tweet.user_mentions[m].screen_name);
+        for (var m = 0, l = tweet.hashtags.length; m < l; m++)
+            hashtagList.addTag(tweet.hashtags[m]);
+    }
+
+    var combined = {'hashtags': hashtagList,
+        'mentions': mentionsList};
+    return combined;
+}
 function TagList() {
 
     this.title = "";
@@ -55,8 +111,18 @@ function TagList() {
     this.column;
     this.addTag = addTag;
     this.sortTags = sortTags;
+    this.addTagListToColumn = addTagListToColumn;
 }
 
+function addTagListToColumn()
+{
+    console.log('Adding ' + this.title + ' to ' + this.column + ' (' + this.tags.length + ')');
+    for (var i = 0, j = this.tags.length; i < j; i++)
+    {
+        console.log(column + '\t' + this.tags[i]);
+        addItemToColumn(this.tags[i], this.column);
+    }
+}
 function addTag(tag) {
 
     if (tag in this.tags)
@@ -70,9 +136,13 @@ function addTag(tag) {
     }
 
 }
+/**
+ * 
+ * @returns {sortTags}
+ */
 function sortTags()
 {
-    console.log(this.tags);
+//    console.log(this.tags);
 //    var sorted = {};
 
     var sorted = [];
@@ -83,7 +153,7 @@ function sortTags()
         b = b[1];
         return a > b ? -1 : (a < b ? 1 : 0);
     });
-    console.log(sorted);
+//    console.log(sorted);
     this.tags = {};
     for (var i = 0; i < sorted.length; i++) {
         var key = sorted[i][0];
@@ -224,40 +294,40 @@ function updateTweetCount()
 }
 function logonToTwitter()
 {
-    
-    
-    
+
+
+
     /*
-    $("#logon-submit").click(function() {
-        var username = $("#logon-username").val();
-        var password = $("#logon-password").val();
-        console.log(username + "\n" + password);
-        var jqxhr = $.post(Twitter_Request_token_URL,
-        {
-        OAuth: oauth_nonce = "K7ny27JTpKVsTgdyLdDfmQQWVLERj2zAK5BslRsqyw",
-                oauth_callback = encodeURI(Twitter_Callback_URL),
-                oauth_signature_method = "HMAC-SHA1",
-                oauth_timestamp = "1300228849",
-                oauth_consumer_key = Twitter_Consumer_key,
-                oauth_signature = "Pc%2BMLdv028fxCErFyi8KXFM%2BddU%3D",
-                oauth_version = "1.0"
-    })
-            .done(function(msg) {
-                console.log("new link added");
-                $("#memex-form").find("input[type=text], textarea").val("");
-            })
-            .fail(function() {
-                alert("error");
-            });
-    });
-    */
+     $("#logon-submit").click(function() {
+     var username = $("#logon-username").val();
+     var password = $("#logon-password").val();
+     console.log(username + "\n" + password);
+     var jqxhr = $.post(Twitter_Request_token_URL,
+     {
+     OAuth: oauth_nonce = "K7ny27JTpKVsTgdyLdDfmQQWVLERj2zAK5BslRsqyw",
+     oauth_callback = encodeURI(Twitter_Callback_URL),
+     oauth_signature_method = "HMAC-SHA1",
+     oauth_timestamp = "1300228849",
+     oauth_consumer_key = Twitter_Consumer_key,
+     oauth_signature = "Pc%2BMLdv028fxCErFyi8KXFM%2BddU%3D",
+     oauth_version = "1.0"
+     })
+     .done(function(msg) {
+     console.log("new link added");
+     $("#memex-form").find("input[type=text], textarea").val("");
+     })
+     .fail(function() {
+     alert("error");
+     });
+     });
+     */
 }
 
 
 var Twitter_Access_level = "Read-only";
 var Twitter_Consumer_key = "hXbF1F2QUVnJcjqj8vUBQ";
 var Twitter_Consumer_secret = "BcdY1uVAPBYtncN0ksS7PHtvPPyXLHaSNpetLJdu8";
-var Twitter_Access_Token=  "22654218-QoAwLex61Qu43j7wfqli78SgnnuUm1oymDfDI9Gw";
+var Twitter_Access_Token = "22654218-QoAwLex61Qu43j7wfqli78SgnnuUm1oymDfDI9Gw";
 var Twitter_Access_Token_Secret = "qFxeo4S55CSHPHIAe9c0GBUTn7SSRADNZuIcnLUC5c";
 var Twitter_Request_token_URL = "https://api.twitter.com/oauth/request_token";
 var Twitter_Authorize_URL = "https://api.twitter.com/oauth/authorize";
