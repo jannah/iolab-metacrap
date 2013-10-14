@@ -21,7 +21,7 @@ function callTwitterAPI(parameters_input, api_input) {
         api: api_input
     }
     return $.ajax({
-        url: 'twitterProxy1.php',
+        url: '_js/twitterProxy1.php',
         type: 'POST',
         dataType: 'json',
         data: api_details,

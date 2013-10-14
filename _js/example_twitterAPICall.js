@@ -7,13 +7,15 @@
 
 $(document).ready(function () {
     //testTwitterUsertimeline();
-    console.log("Testing API Call");
+   /* console.log("Testing API Call");
 
-    var parameters = { 'screen_name': 'slate', 'count': 10 };
+    var parameters = { 'screen_name': 'UCBerkeley', 'count': 100 };
     var api = '1.1/statuses/user_timeline';
     var deferredObject = callTwitterAPI(parameters, api);
     deferredObject.done(function (data) {
         console.log(data)
 
-    });
+
+
+    });*/
 });

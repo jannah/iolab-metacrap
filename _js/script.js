@@ -8,10 +8,11 @@ $(document).ready(function() {
 });
 
 function init() {
-    test();
+//    test();
     eventSubmitTweet();
     eventUpdateTweetCount();
     logonToTwitter();
+//    loadTweets('UCBerkeley');
 
 
 }
@@ -21,32 +22,47 @@ var FRIENDS_TAGS_COLUMN = "#friend-tags-column";
 var FRIENDS_MENTIONS_COLUMN = "#friend-mentions-column";
 var TWEET_AREA_TEXT = "#tweet-text";
 var TWEET_LIMIT = 140;
-var TagListTypes = {Tags: "t", Mentions: "m"};
+var TagListTypes = {Tags: "#", Mentions: "@"};
 
-function test()
+function loadTweets(screen_name)
 {
-    console.log("Testing");
-    var randomTweets = generateTweets(100);
-    addTweetsToPreview(randomTweets);
-    var loadedTagsMentions = loadHashagsAndMentionsFromTweets(randomTweets);
+//    console.log("Testing");
+//    var randomTweets = generateTweets(100);
+
+//    console.log("Testing API Call");
+
+    var parameters = {'screen_name': screen_name, 'count': 100};
+    var api = '1.1/statuses/user_timeline';
+    var deferredObject = callTwitterAPI(parameters, api);
+    deferredObject.done(function(data) {
+        console.log(data);
+        var tweets = convertToTweets(data);
+
+        addTweetsToPreview(tweets);
+        var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets);
 //    var mentions = new TagList();
 //    var hashtags = new TagList();
 //    console.log(loadedTagsMentions);
-    var mentions = loadedTagsMentions.mentions;
-    var hashtags = loadedTagsMentions.hashtags;
+        var mentions = loadedTagsMentions.mentions;
+        var hashtags = loadedTagsMentions.hashtags;
 
-    mentions.sortTags();
-    hashtags.sortTags();
-    console.log(mentions);
-    console.log(hashtags);
+        mentions.sortTags();
+        hashtags.sortTags();
+        console.log(mentions);
+        console.log(hashtags);
 
-    mentions.column = FRIENDS_MENTIONS_COLUMN;
-    hashtags.column = FRIENDS_TAGS_COLUMN;
+        mentions.column = FRIENDS_MENTIONS_COLUMN;
+        hashtags.column = FRIENDS_TAGS_COLUMN;
 //    mentions.addTagListToColumn();
 //    hashtags.addTagListToColumn();
 
-    addTagCloudToColumn(mentions.tags, mentions.column);
-    addTagCloudToColumn(hashtags.tags, hashtags.column);
+        addTagCloudToColumn(mentions.tags, mentions.column);
+        addTagCloudToColumn(hashtags.tags, hashtags.column);
+
+
+
+    });
+
     /*
      var myMentions = new TagList();
      myMentions.title = "My Mentions";
@@ -84,19 +100,21 @@ function loadHashagsAndMentionsFromTweets(tweets)
 {
     var hashtagList = new TagList();
     hashtagList.title = 'Hashtag List';
-    hashtagList.type = 'hashtags';
+    hashtagList.type = '#';
     var mentionsList = new TagList();
     mentionsList.title = 'Mentions List';
-    mentionsList.type = 'mentions';
+    mentionsList.type = '@';
     for (var i = 0, j = tweets.length; i < j; i++)
     {
         var tweet = new Tweet();
         tweet = tweets[i];
 
         for (var m = 0, l = tweet.user_mentions.length; m < l; m++)
-            mentionsList.addTag(tweet.user_mentions[m].screen_name);
+            mentionsList.addTag('@' + tweet.user_mentions[m].screen_name);
         for (var m = 0, l = tweet.hashtags.length; m < l; m++)
-            hashtagList.addTag(tweet.hashtags[m]);
+        {
+            hashtagList.addTag('#' + tweet.hashtags[m]);
+        }
     }
 
     var combined = {'hashtags': hashtagList,
@@ -297,30 +315,14 @@ function logonToTwitter()
 
 
 
-    /*
-     $("#logon-submit").click(function() {
-     var username = $("#logon-username").val();
-     var password = $("#logon-password").val();
-     console.log(username + "\n" + password);
-     var jqxhr = $.post(Twitter_Request_token_URL,
-     {
-     OAuth: oauth_nonce = "K7ny27JTpKVsTgdyLdDfmQQWVLERj2zAK5BslRsqyw",
-     oauth_callback = encodeURI(Twitter_Callback_URL),
-     oauth_signature_method = "HMAC-SHA1",
-     oauth_timestamp = "1300228849",
-     oauth_consumer_key = Twitter_Consumer_key,
-     oauth_signature = "Pc%2BMLdv028fxCErFyi8KXFM%2BddU%3D",
-     oauth_version = "1.0"
-     })
-     .done(function(msg) {
-     console.log("new link added");
-     $("#memex-form").find("input[type=text], textarea").val("");
-     })
-     .fail(function() {
-     alert("error");
-     });
-     });
-     */
+
+    $("#logon-submit").click(function() {
+        var username = $("#logon-username").val();
+        var password = $("#logon-password").val();
+        loadTweets(username);
+
+        return false;
+    });
 }
 
 
