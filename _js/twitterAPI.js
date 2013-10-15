@@ -15,6 +15,8 @@
 
 */
 
+var CALL_USER_TIMELINE = '1.1/statuses/user_timeline';
+
 function callTwitterAPI(parameters_input, api_input) {
     var api_details = {
         parameters: parameters_input,

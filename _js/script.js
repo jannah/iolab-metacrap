@@ -22,6 +22,7 @@ var FRIENDS_TAGS_COLUMN = "#friend-tags-column";
 var FRIENDS_MENTIONS_COLUMN = "#friend-mentions-column";
 var TWEET_AREA_TEXT = "#tweet-text";
 var TWEET_LIMIT = 140;
+var DISPLAYED_TAGS_LIMIT = 10;
 var TagListTypes = {Tags: "#", Mentions: "@"};
 
 function loadTweets(screen_name)
@@ -31,11 +32,12 @@ function loadTweets(screen_name)
 
 //    console.log("Testing API Call");
 
-    var parameters = {'screen_name': screen_name, 'count': 100};
-    var api = '1.1/statuses/user_timeline';
-    var deferredObject = callTwitterAPI(parameters, api);
+    var parameters = {'screen_name': screen_name, 'count': 500};
+//    var api = '1.1/statuses/user_timeline';
+    var deferredObject = callTwitterAPI(parameters, CALL_USER_TIMELINE);
     deferredObject.done(function(data) {
         console.log(data);
+
         var tweets = convertToTweets(data);
 
         addTweetsToPreview(tweets);
@@ -91,38 +93,16 @@ function loadTweets(screen_name)
 
 }
 
+
+/*----------------------------------------------
+ *                  TagList Object              |
+ *----------------------------------------------*/
 /**
- * 
- * @param {Array} tweets
- * @returns {loadHashagsAndMentionsFromTweets.combined}
+ * Tag List Object to manage lists of tags and mentions
+ * @returns {TagList}
  */
-function loadHashagsAndMentionsFromTweets(tweets)
+function TagList()
 {
-    var hashtagList = new TagList();
-    hashtagList.title = 'Hashtag List';
-    hashtagList.type = '#';
-    var mentionsList = new TagList();
-    mentionsList.title = 'Mentions List';
-    mentionsList.type = '@';
-    for (var i = 0, j = tweets.length; i < j; i++)
-    {
-        var tweet = new Tweet();
-        tweet = tweets[i];
-
-        for (var m = 0, l = tweet.user_mentions.length; m < l; m++)
-            mentionsList.addTag('@' + tweet.user_mentions[m].screen_name);
-        for (var m = 0, l = tweet.hashtags.length; m < l; m++)
-        {
-            hashtagList.addTag('#' + tweet.hashtags[m]);
-        }
-    }
-
-    var combined = {'hashtags': hashtagList,
-        'mentions': mentionsList};
-    return combined;
-}
-function TagList() {
-
     this.title = "";
     this.type;
     this.tags = {};
@@ -132,6 +112,10 @@ function TagList() {
     this.addTagListToColumn = addTagListToColumn;
 }
 
+/**
+ * add this tag list to a the column specified in the list
+ * @returns {undefined}
+ */
 function addTagListToColumn()
 {
     console.log('Adding ' + this.title + ' to ' + this.column + ' (' + this.tags.length + ')');
@@ -141,21 +125,28 @@ function addTagListToColumn()
         addItemToColumn(this.tags[i], this.column);
     }
 }
-function addTag(tag) {
 
+/**
+ * add a tag to the tag list and update its frequency
+ * @param {type} tag
+ * @returns {undefined}
+ */
+function addTag(tag)
+{
     if (tag in this.tags)
     {
         var value = this.tags[tag];
         value++;
         this.tags[tag] = value;
     }
-    else {
+    else
+    {
         this.tags[tag] = 1;
     }
-
 }
+
 /**
- * 
+ * Sort Tags in TagList based on frequency
  * @returns {sortTags}
  */
 function sortTags()
@@ -180,6 +171,12 @@ function sortTags()
         // do something with key and value
     }
 }
+
+/**
+ * Format a tag/mention for a list (No Cloud)
+ * @param {String} item
+ * @returns {String}
+ */
 function formatItemForList(item) {
     var str = "<label>";
     str += item;
@@ -187,12 +184,12 @@ function formatItemForList(item) {
     return str;
 }
 /**
- * 
+ * Format the cloud tag for an array fo tags or mentions
  * @param {Array} tags
  * @returns {String}
  */
-function formatCloudTag(tags) {
-
+function formatCloudTag(tags)
+{
     var maxFontSize = 3;
     var minFontSize = 1;
     var maxOpacity = 1;
@@ -224,23 +221,42 @@ function formatCloudTag(tags) {
     return cloud;
 }
 
-function addItemToColumn(item, column) {
+/**
+ * Adds a text item to a column (No cloud tag)
+ * @param {String} item
+ * @param {String} column
+ * @returns {undefined}
+ */
+function addItemToColumn(item, column)
+{
     var itemHTML = $(formatItemForList(item));
 //    console.log(itemHTML);
     $(column).append(itemHTML);
     $(column + " li:last").hide().fadeIn(500);
     eventAppendItemToTweet();
 }
+
+/**
+ * Add a Tag Cloud to a Column
+ * @param {Array} tags
+ * @param {String} column
+ * @returns {undefined}
+ */
 function addTagCloudToColumn(tags, column)
 {
     var cloud = formatCloudTag(tags);
-    for (var i in cloud)
+    for (var i = 0, j = cloud.length; i < j; i++)
     {
         var itemHTML = $(cloud[i]);
         $(column).append(itemHTML);
-        $(column).hide().fadeIn(500);
+        $(column + " label").last().hide()
+        if (i < DISPLAYED_TAGS_LIMIT)
+            $(column + " label").last().fadeIn(500);
     }
 
+    var moreButton = $("<input type='button' class='view-more-tags-button' value='more..'/>");
+    $(column).append(moreButton);
+    eventViewMoreTags();
 //    $(column).addClass("tag-cloud");
     eventAppendItemToTweet();
 }
@@ -248,14 +264,42 @@ function addTagCloudToColumn(tags, column)
 function removeItemFromColumn(item, column) {
 
 }
-//
-//function appendTextToTweet(text) {
-//    var original_text = $("tweet-text").text();
-//    if (original_text.indexOf(text) === text)
-//        $("tweet-text").text(original_text + " " + text);
-//    else
-//        alert(text + " already exists in tweet");
-//}
+
+
+/**
+ * 
+ * @param {Array} tweets
+ * @returns {loadHashagsAndMentionsFromTweets.combined}
+ */
+function loadHashagsAndMentionsFromTweets(tweets)
+{
+    var hashtagList = new TagList();
+    hashtagList.title = 'Hashtag List';
+    hashtagList.type = '#';
+    var mentionsList = new TagList();
+    mentionsList.title = 'Mentions List';
+    mentionsList.type = '@';
+    for (var i = 0, j = tweets.length; i < j; i++)
+    {
+        var tweet = new Tweet();
+        tweet = tweets[i];
+
+        for (var m = 0, l = tweet.user_mentions.length; m < l; m++)
+            mentionsList.addTag('@' + tweet.user_mentions[m].screen_name);
+        for (var m = 0, l = tweet.hashtags.length; m < l; m++)
+        {
+            hashtagList.addTag('#' + tweet.hashtags[m]);
+        }
+    }
+
+    var combined = {'hashtags': hashtagList,
+        'mentions': mentionsList};
+    return combined;
+}
+
+/*----------------------------------------------
+ *                  Events                      |
+ *----------------------------------------------*/
 
 function eventAppendItemToTweet()
 {
@@ -290,32 +334,34 @@ function eventUpdateTweetCount() {
 //     var tweet = $("#tweet-text").text();
 //     /var rem = (TWEET_LIMIT - tweet.length);
 //     $("#tweet-length-label").text(rem+" left");
-    var lbl = $("#tweet-length-label");
-    lbl.text(TWEET_LIMIT + " left");
-    $("#tweet-text").bind('input propertychange', function(event, previousText) {
+    var lbl = $('#tweet-length-label');
+    lbl.text(TWEET_LIMIT + ' left');
+    $('#tweet-text').bind('input propertychange', function(event, previousText) {
         updateTweetCount();
     });
 }
-
+function eventViewMoreTags() {
+    $('.view-more-tags-button').click(function() {
+        $(this).parent('.suggestion-column').children('.tag').show();
+        alert("View More");
+        return false;
+    });
+}
 function updateTweetCount()
 {
-    var lbl = $("#tweet-length-label");
-    var text = TWEET_LIMIT - parseInt($("#tweet-text").val().length);
+    var lbl = $('#tweet-length-label');
+    var text = TWEET_LIMIT - parseInt($('#tweet-text').val().length);
 //        console.log(text);
-    lbl.text(text + " left");
+    lbl.text(text + ' left');
     if (text < 0) {
-        lbl.css("color", "red");
+        lbl.css('color', 'red');
     }
     else {
-        lbl.css("color", "black");
+        lbl.css('color', 'black');
     }
 }
 function logonToTwitter()
 {
-
-
-
-
     $("#logon-submit").click(function() {
         var username = $("#logon-username").val();
         var password = $("#logon-password").val();
@@ -324,16 +370,3 @@ function logonToTwitter()
         return false;
     });
 }
-
-
-var Twitter_Access_level = "Read-only";
-var Twitter_Consumer_key = "hXbF1F2QUVnJcjqj8vUBQ";
-var Twitter_Consumer_secret = "BcdY1uVAPBYtncN0ksS7PHtvPPyXLHaSNpetLJdu8";
-var Twitter_Access_Token = "22654218-QoAwLex61Qu43j7wfqli78SgnnuUm1oymDfDI9Gw";
-var Twitter_Access_Token_Secret = "qFxeo4S55CSHPHIAe9c0GBUTn7SSRADNZuIcnLUC5c";
-var Twitter_Request_token_URL = "https://api.twitter.com/oauth/request_token";
-var Twitter_Authorize_URL = "https://api.twitter.com/oauth/authorize";
-var Twitter_Access_token_URL = "https://api.twitter.com/oauth/access_token";
-var Twitter_Callback_URL = "http://people.ischool.berkeley.edu/~jannah/";
-
-

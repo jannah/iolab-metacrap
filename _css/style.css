@@ -122,3 +122,23 @@ body{
 
     resize: none;
 }
+.tweet{
+    border-bottom: 1px solid #a2a2a2;
+    background-color:white;
+}
+
+.tweet img{
+    height:80px;
+    width: 80px;
+    margin:2px;
+    float:left;   
+}
+
+.tweet h1{
+    text-size:large;
+    float:left;
+    margin: 0 2px;
+}
+.tweet p{
+    text-size: small;
+}

@@ -73,8 +73,8 @@ function getHTMLFormat() {
     var str = "<div class='tweet'>";
     str += "<img src='" + this.user.profile_image_url + "'";
     str += " alt='" + this.user.screen_name + "'/>";
-    str += "<h1>" + this.user.screen_name + "</h1><h2>";
-    str += this.user.name + "<h2><p>";
+    str += "<h1>" + this.user.screen_name + "</h1>  <h2>";
+    str += " "+ this.user.name + "<h2><br><p>";
     var textArray = this.text.split(' ');
     for (var i = 0, j = textArray.length; i < j; i++)
     {
@@ -134,6 +134,7 @@ function TwitterUser(/*user*/) {
 }
 function convertToTweets(data)
 {
+    console.log(data.length+ " tweets retrieved");
     var tweets = [];
     for (var i = 0, j = data.length; i < j; i++)
     {
