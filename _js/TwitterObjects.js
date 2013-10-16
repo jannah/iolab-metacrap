@@ -154,7 +154,7 @@ function addTweetsToPreview(tweets)
         var tweet = tweets[i];
 //        console.log(tweet)
         var element = $(tweet.getHTMLFormat());
-        $("#tweets-preview-area").append(element);
+        $("#tweets-preview-feed").append(element);
     }
 }
 

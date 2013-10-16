@@ -16,21 +16,21 @@ function init() {
 
 
 }
-var MY_TAGS_COLUMN = "#my-tags-column";
-var MY_MENTIONS_COLUMN = "#my-mentions-column";
-var FRIENDS_TAGS_COLUMN = "#friend-tags-column";
-var FRIENDS_MENTIONS_COLUMN = "#friend-mentions-column";
-var TWEET_AREA_TEXT = "#tweet-text";
+var MY_TAGS_COLUMN = '#my-tags-column';
+var MY_MENTIONS_COLUMN = '#my-mentions-column';
+var FRIENDS_TAGS_COLUMN = '#friend-tags-column';
+var FRIENDS_MENTIONS_COLUMN = '#friend-mentions-column';
+var TWEET_AREA_TEXT = '#tweet-text';
 var TWEET_LIMIT = 140;
 var DISPLAYED_TAGS_LIMIT = 10;
-var TagListTypes = {Tags: "#", Mentions: "@"};
+var TagListTypes = {Tags: '#', Mentions: '@'};
 
 function loadTweets(screen_name)
 {
-//    console.log("Testing");
+//    console.log('Testing');
 //    var randomTweets = generateTweets(100);
 
-//    console.log("Testing API Call");
+//    console.log('Testing API Call');
 
     var parameters = {'screen_name': screen_name, 'count': 500};
 //    var api = '1.1/statuses/user_timeline';
@@ -67,15 +67,15 @@ function loadTweets(screen_name)
 
     /*
      var myMentions = new TagList();
-     myMentions.title = "My Mentions";
+     myMentions.title = 'My Mentions';
      myMentions.column = MY_MENTIONS_COLUMN;
      myMentions.type = TagListTypes.Mentions;
-     myMentions.addTag("@donjannah");
-     myMentions.addTag("@donjannah");
-     myMentions.addTag("@donjannah");
+     myMentions.addTag('@donjannah');
+     myMentions.addTag('@donjannah');
+     myMentions.addTag('@donjannah');
      for (var i = 1; i <= 10; i++) {
-     myMentions.addTag("@test-" + i);
-     myMentions.tags["@test-" + i] = Math.floor((Math.random() * 20) + 1);
+     myMentions.addTag('@test-' + i);
+     myMentions.tags['@test-' + i] = Math.floor((Math.random() * 20) + 1);
      }
      
      //    console.log(myMentions);
@@ -83,7 +83,7 @@ function loadTweets(screen_name)
      myMentions.sortTags();
      for (var key in myMentions.tags)
      {
-     //        console.log("Adding " + key + "to " + myMentions.column);
+     //        console.log('Adding ' + key + 'to ' + myMentions.column);
      addItemToColumn(key, myMentions.column);
      }
      */
@@ -103,7 +103,7 @@ function loadTweets(screen_name)
  */
 function TagList()
 {
-    this.title = "";
+    this.title = '';
     this.type;
     this.tags = {};
     this.column;
@@ -178,9 +178,9 @@ function sortTags()
  * @returns {String}
  */
 function formatItemForList(item) {
-    var str = "<label>";
+    var str = '<label>';
     str += item;
-    str += "</label>";
+    str += '</label>';
     return str;
 }
 /**
@@ -194,7 +194,7 @@ function formatCloudTag(tags)
     var minFontSize = 1;
     var maxOpacity = 1;
     var minOpacity = .6;
-    var fontSizeUnit = "em";
+    var fontSizeUnit = 'em';
     var cloud = [];
     var maxSize = 0;
     var minSize = 100000000;
@@ -206,15 +206,15 @@ function formatCloudTag(tags)
         if (frequency < minSize)
             minSize = frequency;
     }
-//    console.log("Max Size=" + maxSize + "\nMin Size=" + minSize);
+//    console.log('Max Size=' + maxSize + '\nMin Size=' + minSize);
     for (var key in tags)
     {
         var frequency = tags[key];
         var fontSize = (frequency - minSize) / (maxSize - minSize) * (maxFontSize - minFontSize) + minFontSize;
         var opacity = maxOpacity * (frequency - minSize) / (maxSize - minSize) + minOpacity;
-        var str = "<label style='font-size:" + fontSize + fontSizeUnit + ";opacity:" + opacity + ";'>";
+        var str = "<label class='tag' style='font-size:" + fontSize + fontSizeUnit + ";opacity:" + opacity + ";'>";
         str += key;
-        str += "</label>";
+        str += '</label>';
         cloud.push(str);
     }
 //console.log(cloud);
@@ -232,7 +232,7 @@ function addItemToColumn(item, column)
     var itemHTML = $(formatItemForList(item));
 //    console.log(itemHTML);
     $(column).append(itemHTML);
-    $(column + " li:last").hide().fadeIn(500);
+    $(column + ' li:last').hide().fadeIn(500);
     eventAppendItemToTweet();
 }
 
@@ -249,13 +249,22 @@ function addTagCloudToColumn(tags, column)
     {
         var itemHTML = $(cloud[i]);
         $(column).append(itemHTML);
-        $(column + " label").last().hide()
         if (i < DISPLAYED_TAGS_LIMIT)
-            $(column + " label").last().fadeIn(500);
+        {
+            $(column + ' label').last().hide().fadeIn(500);
+        }
+        else
+        {
+            $(column + ' label').last().addClass('tag-hidden').hide();
+            ;
+
+        }
     }
 
     var moreButton = $("<input type='button' class='view-more-tags-button' value='more..'/>");
     $(column).append(moreButton);
+    $(column).css('display', 'inline-block');
+    $(column).hide().delay(500).fadeIn(500);
     eventViewMoreTags();
 //    $(column).addClass("tag-cloud");
     eventAppendItemToTweet();
@@ -300,11 +309,14 @@ function loadHashagsAndMentionsFromTweets(tweets)
 /*----------------------------------------------
  *                  Events                      |
  *----------------------------------------------*/
-
+/**
+ * event to append  a clicked mention or hashtag to the tweet text
+ * @returns {undefined}
+ */
 function eventAppendItemToTweet()
 {
-    $(".suggestion-column label").unbind("click");
-    $(".suggestion-column label").click(function() {
+    $('.suggestion-column label').unbind('click');
+    $('.suggestion-column label').click(function() {
 
         var original_text = $(TWEET_AREA_TEXT).text();
         var text = $(this).text();
@@ -313,40 +325,65 @@ function eventAppendItemToTweet()
         if (original_text.indexOf(text) === -1 || original_text.length === 0)
         {
             if (original_text.length > 0)
-                text = " " + text;
+                text = ' ' + text;
             $(TWEET_AREA_TEXT).append(text);
         }
         else
-            alert(text + " already exists in tweet");
+            alert(text + ' already exists in tweet');
         updateTweetCount();
     });
 }
-
+/**
+ * event to submit a new tweet
+ * TODO
+ * @returns {undefined}
+ */
 function eventSubmitTweet()
 {
-    $("#tweet-submit").click(function() {
-        var tweet = $("#tweet-text").text();
-        alert("Submitting tweet:\n" + tweet);
+    $('#tweet-submit').click(function() {
+        var tweet = $('#tweet-text').text();
+        alert('Submitting tweet:\n' + tweet);
     });
 }
-
+/**
+ *  event to update the tweet count
+ * @returns {undefined}
+ */
 function eventUpdateTweetCount() {
-//     var tweet = $("#tweet-text").text();
+//     var tweet = $('#tweet-text').text();
 //     /var rem = (TWEET_LIMIT - tweet.length);
-//     $("#tweet-length-label").text(rem+" left");
+//     $('#tweet-length-label').text(rem+' left');
     var lbl = $('#tweet-length-label');
     lbl.text(TWEET_LIMIT + ' left');
-    $('#tweet-text').bind('input propertychange', function(event, previousText) {
+    $('#tweet-text').bind('input propertychange', function(event, previousText)
+    {
         updateTweetCount();
     });
 }
+/**
+ * event to show more tags in a column
+ * @returns {undefined}
+ */
 function eventViewMoreTags() {
-    $('.view-more-tags-button').click(function() {
-        $(this).parent('.suggestion-column').children('.tag').show();
-        alert("View More");
+    $('.view-more-tags-button').unbind('click');
+    $('.view-more-tags-button').click(function()
+    {
+        var tags = $(this).siblings('.tag-hidden');
+
+        for (var i = 0, m = tags.length; i < m && i < DISPLAYED_TAGS_LIMIT;
+                i++)
+        {
+            var tag = tags.get(i);
+            $(tag).removeClass('tag-hidden');
+            $(tag).fadeIn(500);
+        }
         return false;
     });
 }
+/**
+ *update the tweet character count
+ * @returns {undefined}
+ */
 function updateTweetCount()
 {
     var lbl = $('#tweet-length-label');
@@ -362,9 +399,9 @@ function updateTweetCount()
 }
 function logonToTwitter()
 {
-    $("#logon-submit").click(function() {
-        var username = $("#logon-username").val();
-        var password = $("#logon-password").val();
+    $('#logon-submit').click(function() {
+        var username = $('#logon-username').val();
+        var password = $('#logon-password').val();
         loadTweets(username);
 
         return false;
