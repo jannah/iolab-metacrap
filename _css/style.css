@@ -157,7 +157,7 @@ main{
     visibility: hidden;
 }
 
-.tag :hover{
+.tag:hover{
     background-color:#C0DEED;
     cursor: pointer; cursor: hand;
 }
