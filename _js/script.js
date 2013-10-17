@@ -12,6 +12,8 @@ function init() {
     eventSubmitTweet();
     eventUpdateTweetCount();
     logonToTwitter();
+    loadHomeLine();
+     google.maps.event.addDomListener(window, 'load', initializeMap);
 //    loadTweets('UCBerkeley');
 
 
@@ -25,73 +27,6 @@ var TWEET_LIMIT = 140;
 var DISPLAYED_TAGS_LIMIT = 10;
 var TagListTypes = {Tags: '#', Mentions: '@'};
 
-function loadTweets(screen_name)
-{
-//    console.log('Testing');
-//    var randomTweets = generateTweets(100);
-
-//    console.log('Testing API Call');
-
-    var parameters = {'screen_name': screen_name, 'count': 500};
-//    var api = '1.1/statuses/user_timeline';
-    var deferredObject = callTwitterAPI(parameters, CALL_USER_TIMELINE);
-    deferredObject.done(function(data) {
-        console.log(data);
-
-        var tweets = convertToTweets(data);
-
-        addTweetsToPreview(tweets);
-        var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets);
-//    var mentions = new TagList();
-//    var hashtags = new TagList();
-//    console.log(loadedTagsMentions);
-        var mentions = loadedTagsMentions.mentions;
-        var hashtags = loadedTagsMentions.hashtags;
-
-        mentions.sortTags();
-        hashtags.sortTags();
-        console.log(mentions);
-        console.log(hashtags);
-
-        mentions.column = FRIENDS_MENTIONS_COLUMN;
-        hashtags.column = FRIENDS_TAGS_COLUMN;
-//    mentions.addTagListToColumn();
-//    hashtags.addTagListToColumn();
-
-        addTagCloudToColumn(mentions.tags, mentions.column);
-        addTagCloudToColumn(hashtags.tags, hashtags.column);
-
-
-
-    });
-
-    /*
-     var myMentions = new TagList();
-     myMentions.title = 'My Mentions';
-     myMentions.column = MY_MENTIONS_COLUMN;
-     myMentions.type = TagListTypes.Mentions;
-     myMentions.addTag('@donjannah');
-     myMentions.addTag('@donjannah');
-     myMentions.addTag('@donjannah');
-     for (var i = 1; i <= 10; i++) {
-     myMentions.addTag('@test-' + i);
-     myMentions.tags['@test-' + i] = Math.floor((Math.random() * 20) + 1);
-     }
-     
-     //    console.log(myMentions);
-     addTagCloudToColumn(myMentions.tags, FRIENDS_MENTIONS_COLUMN);
-     myMentions.sortTags();
-     for (var key in myMentions.tags)
-     {
-     //        console.log('Adding ' + key + 'to ' + myMentions.column);
-     addItemToColumn(key, myMentions.column);
-     }
-     */
-
-
-
-
-}
 
 
 /*----------------------------------------------
@@ -405,5 +340,140 @@ function logonToTwitter()
         loadTweets(username);
 
         return false;
+    });
+}
+
+function loadTweets(screen_name)
+{
+//    console.log('Testing');
+//    var randomTweets = generateTweets(100);
+
+//    console.log('Testing API Call');
+
+    var parameters = {'screen_name': screen_name, 'count': 500};
+//    var api = '1.1/statuses/user_timeline';
+    var deferredObject = callTwitterAPI(parameters, CALL_USER_TIMELINE);
+    deferredObject.done(function(data) {
+        console.log(data);
+
+        var tweets = convertToTweets(data);
+
+        addTweetsToPreview(tweets);
+        var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets);
+//    var mentions = new TagList();
+//    var hashtags = new TagList();
+//    console.log(loadedTagsMentions);
+        var mentions = loadedTagsMentions.mentions;
+        var hashtags = loadedTagsMentions.hashtags;
+
+        mentions.sortTags();
+        hashtags.sortTags();
+        console.log(mentions);
+        console.log(hashtags);
+
+        mentions.column = MY_MENTIONS_COLUMN;
+        hashtags.column = MY_TAGS_COLUMN;
+//    mentions.addTagListToColumn();
+//    hashtags.addTagListToColumn();
+
+        addTagCloudToColumn(mentions.tags, mentions.column);
+        addTagCloudToColumn(hashtags.tags, hashtags.column);
+
+
+
+    });
+
+    /*
+     var myMentions = new TagList();
+     myMentions.title = 'My Mentions';
+     myMentions.column = MY_MENTIONS_COLUMN;
+     myMentions.type = TagListTypes.Mentions;
+     myMentions.addTag('@donjannah');
+     myMentions.addTag('@donjannah');
+     myMentions.addTag('@donjannah');
+     for (var i = 1; i <= 10; i++) {
+     myMentions.addTag('@test-' + i);
+     myMentions.tags['@test-' + i] = Math.floor((Math.random() * 20) + 1);
+     }
+     
+     //    console.log(myMentions);
+     addTagCloudToColumn(myMentions.tags, FRIENDS_MENTIONS_COLUMN);
+     myMentions.sortTags();
+     for (var key in myMentions.tags)
+     {
+     //        console.log('Adding ' + key + 'to ' + myMentions.column);
+     addItemToColumn(key, myMentions.column);
+     }
+     */
+
+
+
+
+}
+
+
+function loadHomeLine()
+{
+    var deferredObject = getHomeTimeline(800);
+     deferredObject.done(function(data) {
+         console.log('retrieved home timeline');
+         
+         
+         var tweets = convertToTweets(data);
+//      addTweetsToPreview(tweets);
+        var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets);
+
+        var mentions = loadedTagsMentions.mentions;
+        var hashtags = loadedTagsMentions.hashtags;
+
+        mentions.sortTags();
+        hashtags.sortTags();
+        console.log(mentions);
+        console.log(hashtags);
+
+        mentions.column = FRIENDS_MENTIONS_COLUMN;
+        hashtags.column = FRIENDS_TAGS_COLUMN;
+
+
+        addTagCloudToColumn(mentions.tags, mentions.column);
+        addTagCloudToColumn(hashtags.tags, hashtags.column);
+         
+     });
+     
+}
+
+  function initializeMap()
+{
+    if (navigator.geolocation)
+    {
+        return navigator.geolocation.getCurrentPosition(showPosition);
+    }
+    else {
+        alert("Geolocation is not supported by this browser.");
+        return;
+    }
+}
+function showPosition(position)
+{
+
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    console.log("Latitude: " + lat + "\nLongitude: " + lon);
+
+//    $("#lat-label").text(lat);
+//    $("#lon-label").text(lon);
+    var mapOptions = {
+        center: latlng,
+        zoom: 16,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+
+    var marker = new google.maps.Marker({
+        position: latlng,
+        map: map,
+        title: "You are here! (at least within a " + position.coords.accuracy + " meter radius)"
     });
 }

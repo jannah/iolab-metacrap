@@ -10,7 +10,6 @@
 
 */
 
-<<<<<<< HEAD
 /*
     (String) username: username to lookup timeline
     (int) count: # of tweets to lookup
@@ -83,9 +82,9 @@ function getSearchResults(query_string, count, location) {
     (Java Object) parameters_input => Is a Javascript object containing tuples of key:value pairs corresponding to twitter parameter name: parameter value. 
     (String) api_input => String representatin of the type of desired API call. Within the API reference, is of form "1.1/<name of twitter api call>" from https://dev.twitter.com/docs/api/1.1
     Return Value: Deferred Object. See above for how to invoke*/
-=======
+
 var CALL_USER_TIMELINE = '1.1/statuses/user_timeline';
->>>>>>> master
+
 
 function callTwitterAPI(parameters_input, api_input) {
     var api_details = {

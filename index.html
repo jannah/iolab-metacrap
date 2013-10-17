@@ -14,7 +14,9 @@ and open the template in the editor.
         <script src="_js/twitterAPI.js"></script>
         <script src="_js/TwitterObjects.js"></script>
         <script src="_js/example_twitterAPICall.js"></script>
-
+        <script type="text/javascript"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDx5Ck9UD6oY6-vbDSPZMM5u-ilt77DvNY&sensor=false">
+        </script>
         <link rel="stylesheet" type="text/css" href='_css/style.css'>
         <link rel="stylesheet" type="text/css" href="_css/reset.css">
         <!--<link href='http://fonts.googleapis.com/css?family=Ropa+Sans' rel='stylesheet' type='text/css'>-->
@@ -26,54 +28,52 @@ and open the template in the editor.
             <h1>Tweet for Dummies!</h1>
         </header>
     <main> 
-        <div id="container"></div>
-        <div id="submit-tweet-area">
-            <br>
-            <div id="login-area" class="borders area">
-                <h1><label class="area-header">Login Area</label></h1>
-                <form id="login-form">
-                    <input id="logon-username" type="text" placeholder="Twitter username" value="UCBerkeley"/>
-                    <input id="logon-password" type="password"/>
-                    <input id="logon-submit" type="submit" value="Login"/>
-                </form>
-            </div>
-            <br>
-            <div id="tweet-area" class="borders area">
-                <h1><label class="area-header">Tweet Area</label></h1>
+        <div id="container">
+
+            <div id="tweet-area" class="area">
+                <h1><label class="area-header">Tweet</label></h1>
                 <form id="tweet-form">
                     <textarea id="tweet-text"  placeholder="Tweet!"></textarea>
                     <input id="tweet-submit" type="submit" value="Tweet"/>
                     <label id="tweet-length-label"></label>
                 </form>
-            </div>
-            <br>
-            <div id="suggestion-area" class="area">
+            </div>   
+            <div id="login-area" class="area">
+                <h1><label class="area-header">Get User Tweets</label></h1>
+                <form id="login-form">
+                    <input id="logon-username" type="text" placeholder="Twitter username" value="UCBerkeley"/>
+                    <input id="logon-password" type="hidden"/>
+                    <input id="logon-submit" type="submit" value="Grab'em"/>
+                </form>
+                <br>
+                <div id="tweets-preview-feed"></div>  
+                <!--            <div id="tweets-preview-area" class="area">
+                                <h1><label class="area-header">Preview</label></h1>
+                
+                                <div id="tweets-preview-feed">
+                                </div>
+                            </div>-->
 
-                <div class="suggestion-column borders area" id="my-mentions-column">
-
-                    <h2><label class="area-header">My Mentions</label></h2>
-
-                </div>
-
-                <div class="suggestion-column borders area" id="friend-mentions-column">
-                    <h2><label class="area-header">Friends' Mentions</label></h2>
-                </div>
-
-                <div class="suggestion-column borders area" id="my-tags-column">
-                    <h2><label class="area-header">My Hashtags</label></h2>
-                </div>
-
-                <div class="suggestion-column borders area" id="friend-tags-column">
-                    <h2><label class="area-header">Friends' Hashtags</label></h2>
-                </div>
-            </div>
+            </div>  
         </div>
-        <div id="tweets-preview-area" class="area">
-            <h1><label class="area-header">Preview</label></h1>
-
-            <div id="tweets-preview-feed">
+        <div id="suggestion-area">
+            <div id="map-canvas"></div>
+            <div class="suggestion-column area" id="my-mentions-column">
+                <h2><label class="area-header">My Mentions</label></h2>
             </div>
-        </div>
+
+            <div class="suggestion-column area" id="friend-mentions-column">
+                <h2><label class="area-header">Friends' Mentions</label></h2>
+            </div>
+
+            <div class="suggestion-column area" id="my-tags-column">
+                <h2><label class="area-header">My Hashtags</label></h2>
+            </div>
+
+            <div class="suggestion-column area" id="friend-tags-column">
+                <h2><label class="area-header">Friends' Hashtags</label></h2>
+            </div>
+        </div>  
 
     </main>
     <footer>

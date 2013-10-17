@@ -156,6 +156,8 @@ function addTweetsToPreview(tweets)
         var element = $(tweet.getHTMLFormat());
         $("#tweets-preview-feed").append(element);
     }
+    $("#tweets-preview-feed").css('height','700px')
+    
 }
 
 /**

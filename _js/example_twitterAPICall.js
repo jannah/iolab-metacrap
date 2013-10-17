@@ -5,7 +5,7 @@
 */
 
 $(document).ready(function () {
-<<<<<<< HEAD
+
 
     
     console.log("Testing API Call???");
@@ -23,7 +23,7 @@ $(document).ready(function () {
         console.log("\n");
     });
     // equivalent to generic api call:
-=======
+
     //testTwitterUsertimeline();
    /* console.log("Testing API Call");
 
@@ -107,5 +107,4 @@ $(document).ready(function () {
 	
 =======
     });*/
->>>>>>> master
 });
