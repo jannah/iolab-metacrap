@@ -13,19 +13,35 @@ function init() {
     eventUpdateTweetCount();
     logonToTwitter();
     loadHomeLine();
-     google.maps.event.addDomListener(window, 'load', initializeMap);
-//    loadTweets('UCBerkeley');
+    google.maps.event.addDomListener(window, 'load', initializeMap);
+//    loadTweetsByScreenName('UCBerkeley');
 
 
 }
-var MY_TAGS_COLUMN = '#my-tags-column';
-var MY_MENTIONS_COLUMN = '#my-mentions-column';
-var FRIENDS_TAGS_COLUMN = '#friend-tags-column';
-var FRIENDS_MENTIONS_COLUMN = '#friend-mentions-column';
+/*
+ var MY_TAGS_COLUMN = '#my-tags-column';
+ var MY_MENTIONS_COLUMN = '#my-mentions-column';
+ var FRIENDS_TAGS_COLUMN = '#friend-tags-column';
+ var FRIENDS_MENTIONS_COLUMN = '#friend-mentions-column';
+ var NEAR_TAGS_COLUMN = '#friend-tags-column';
+ var NEAR_MENTIONS_COLUMN = '#friend-mentions-column';
+ */
+var MY_TAGS_COLUMN = 'My Tags';
+var MY_MENTIONS_COLUMN = 'My Mentions';
+var FRIENDS_TAGS_COLUMN = 'Friend tags';
+var FRIENDS_MENTIONS_COLUMN = 'Friend mentions';
+var NEAR_TAGS_COLUMN = 'Nearby tags';
+var NEAR_MENTIONS_COLUMN = 'Nearby mentions';
+
+var map;
+
+
 var TWEET_AREA_TEXT = '#tweet-text';
 var TWEET_LIMIT = 140;
 var DISPLAYED_TAGS_LIMIT = 10;
 var TagListTypes = {Tags: '#', Mentions: '@'};
+
+
 
 
 
@@ -41,10 +57,13 @@ function TagList()
     this.title = '';
     this.type;
     this.tags = {};
+    this.tagLocations = {};
+
     this.column;
     this.addTag = addTag;
     this.sortTags = sortTags;
     this.addTagListToColumn = addTagListToColumn;
+    this.addTagLocation = addTagLocation;
 }
 
 /**
@@ -53,10 +72,8 @@ function TagList()
  */
 function addTagListToColumn()
 {
-    console.log('Adding ' + this.title + ' to ' + this.column + ' (' + this.tags.length + ')');
     for (var i = 0, j = this.tags.length; i < j; i++)
     {
-        console.log(column + '\t' + this.tags[i]);
         addItemToColumn(this.tags[i], this.column);
     }
 }
@@ -73,13 +90,32 @@ function addTag(tag)
         var value = this.tags[tag];
         value++;
         this.tags[tag] = value;
+
     }
     else
     {
         this.tags[tag] = 1;
     }
+//    console.log(this.tags);
 }
+function addTagLocation(tag, coordinates)
+{
+    if (coordinates)
+        console.log('coordinates:' + coordinates);
+    if (tag in this.tagLocations)
+    {
+        var value = this.tagLocations[tag].frequency;
+        value++;
+        this.tagLocations[tag].frequency = value;
 
+    }
+    else
+    {
+        this.tagLocations[tag] = {'frequency': 1, 'coordinates': []};
+    }
+    this.tagLocations[tag].coordinates.push(coordinates);
+
+}
 /**
  * Sort Tags in TagList based on frequency
  * @returns {sortTags}
@@ -125,8 +161,8 @@ function formatItemForList(item) {
  */
 function formatCloudTag(tags)
 {
-    var maxFontSize = 3;
-    var minFontSize = 1;
+    var maxFontSize = 2;
+    var minFontSize = .75;
     var maxOpacity = 1;
     var minOpacity = .6;
     var fontSizeUnit = 'em';
@@ -156,7 +192,7 @@ function formatCloudTag(tags)
     return cloud;
 }
 
-/**
+/**TODO
  * Adds a text item to a column (No cloud tag)
  * @param {String} item
  * @param {String} column
@@ -174,42 +210,64 @@ function addItemToColumn(item, column)
 /**
  * Add a Tag Cloud to a Column
  * @param {Array} tags
- * @param {String} column
+ * @param {String} header
  * @returns {undefined}
  */
-function addTagCloudToColumn(tags, column)
+function addTagCloudToColumn(tags, header)
 {
     var cloud = formatCloudTag(tags);
+
+    var column = addColumnToSuggestions(header);
+//    $(column).css('display', 'inline-block');
+//    $(column).fadeIn(500);
+//    console.log(column);
     for (var i = 0, j = cloud.length; i < j; i++)
     {
         var itemHTML = $(cloud[i]);
         $(column).append(itemHTML);
         if (i < DISPLAYED_TAGS_LIMIT)
         {
-            $(column + ' label').last().hide().fadeIn(500);
+            $(column).children('.tag').last().hide().fadeIn(500);
         }
         else
         {
-            $(column + ' label').last().addClass('tag-hidden').hide();
-            ;
-
+            $(column).children('.tag').last().addClass('tag-hidden').hide();
         }
     }
-
     var moreButton = $("<input type='button' class='view-more-tags-button' value='more..'/>");
     $(column).append(moreButton);
-    $(column).css('display', 'inline-block');
-    $(column).hide().delay(500).fadeIn(500);
     eventViewMoreTags();
-//    $(column).addClass("tag-cloud");
     eventAppendItemToTweet();
+    console.log('New column added');
 }
+/**
+ * 
+ * @param {string} header
+ * @returns {jQuery}
+ */
+function addColumnToSuggestions(header)
+{
 
+    var itemHTML = $("<li class='suggestion-column area'>"
+            + "<h2><label class='area-header'>" + header
+            + "</label></h2></li>");
+    itemHTML.addClass('suggestion-column')
+            .addClass('area');
+    $('#suggestion-area ul').append(itemHTML);
+
+    var column = $('#suggestion-area ul .suggestion-column').last();
+    $(column).show();
+
+    return column;
+//    console.log('column added');
+}
 function removeItemFromColumn(item, column) {
 
 }
 
-
+/*----------------------------------------
+ *              Processing
+ *---------------------------------------*/
 /**
  * 
  * @param {Array} tweets
@@ -229,12 +287,20 @@ function loadHashagsAndMentionsFromTweets(tweets)
         tweet = tweets[i];
 
         for (var m = 0, l = tweet.user_mentions.length; m < l; m++)
+        {
             mentionsList.addTag('@' + tweet.user_mentions[m].screen_name);
+            mentionsList.addTagLocation('@' + tweet.user_mentions[m].screen_name, tweet.coordinates);
+        }
         for (var m = 0, l = tweet.hashtags.length; m < l; m++)
         {
             hashtagList.addTag('#' + tweet.hashtags[m]);
+            hashtagList.addTagLocation('#' + tweet.hashtags[m], tweet.coordinates);
         }
     }
+
+//    console.log(mentionsList.tagLocations);
+//    console.log(hashtagList.tagLocations);
+
 
     var combined = {'hashtags': hashtagList,
         'mentions': mentionsList};
@@ -250,18 +316,26 @@ function loadHashagsAndMentionsFromTweets(tweets)
  */
 function eventAppendItemToTweet()
 {
-    $('.suggestion-column label').unbind('click');
-    $('.suggestion-column label').click(function() {
+//    console.log('adding event: append item to tweet');
+    $('.tag').unbind('click');
+    $('.tag').click(function() {
 
-        var original_text = $(TWEET_AREA_TEXT).text();
+//        var original_text = $(TWEET_AREA_TEXT).text();
+        var original_value = $(TWEET_AREA_TEXT).val();
         var text = $(this).text();
-//        console.log(text);
-//        console.log(original_text);
-        if (original_text.indexOf(text) === -1 || original_text.length === 0)
+
+//        console.log('Original Text: ' + original_text);
+        console.log('Original value: ' + original_value);
+        console.log('Additional Text: ' + text);
+        if (original_value.indexOf(text) === -1 || original_value.length === 0)
         {
-            if (original_text.length > 0)
+            if (original_value.length > 0)
                 text = ' ' + text;
-            $(TWEET_AREA_TEXT).append(text);
+//            $(TWEET_AREA_TEXT).append(text);
+            $(TWEET_AREA_TEXT).val(original_value + text);
+
+//           console.log('New Text: ' + $(TWEET_AREA_TEXT).text()); 
+            console.log('New Value: ' + $(TWEET_AREA_TEXT).val());
         }
         else
             alert(text + ' already exists in tweet');
@@ -284,10 +358,8 @@ function eventSubmitTweet()
  *  event to update the tweet count
  * @returns {undefined}
  */
-function eventUpdateTweetCount() {
-//     var tweet = $('#tweet-text').text();
-//     /var rem = (TWEET_LIMIT - tweet.length);
-//     $('#tweet-length-label').text(rem+' left');
+function eventUpdateTweetCount()
+{
     var lbl = $('#tweet-length-label');
     lbl.text(TWEET_LIMIT + ' left');
     $('#tweet-text').bind('input propertychange', function(event, previousText)
@@ -299,7 +371,9 @@ function eventUpdateTweetCount() {
  * event to show more tags in a column
  * @returns {undefined}
  */
-function eventViewMoreTags() {
+function eventViewMoreTags()
+{
+//    console.log('adding event: more tags');
     $('.view-more-tags-button').unbind('click');
     $('.view-more-tags-button').click(function()
     {
@@ -315,6 +389,10 @@ function eventViewMoreTags() {
         return false;
     });
 }
+
+/*----------------------------------------------
+ *            Twitter Actions                  |
+ *----------------------------------------------*/
 /**
  *update the tweet character count
  * @returns {undefined}
@@ -337,112 +415,87 @@ function logonToTwitter()
     $('#logon-submit').click(function() {
         var username = $('#logon-username').val();
         var password = $('#logon-password').val();
-        loadTweets(username);
+        loadTweetsByScreenName(username);
 
         return false;
     });
 }
 
-function loadTweets(screen_name)
+/**
+ * Retrieve user timeline from twitter by screen_name
+ * @param {String} screen_name
+ * @returns {undefined}
+ */
+function loadTweetsByScreenName(screen_name)
 {
-//    console.log('Testing');
-//    var randomTweets = generateTweets(100);
-
-//    console.log('Testing API Call');
-
     var parameters = {'screen_name': screen_name, 'count': 500};
-//    var api = '1.1/statuses/user_timeline';
     var deferredObject = callTwitterAPI(parameters, CALL_USER_TIMELINE);
     deferredObject.done(function(data) {
-        console.log(data);
-
         var tweets = convertToTweets(data);
+        processTweetsData(tweets, '@' + screen_name + ' mentions', '@'
+                + screen_name + ' tags');
 
         addTweetsToPreview(tweets);
-        var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets);
-//    var mentions = new TagList();
-//    var hashtags = new TagList();
-//    console.log(loadedTagsMentions);
-        var mentions = loadedTagsMentions.mentions;
-        var hashtags = loadedTagsMentions.hashtags;
-
-        mentions.sortTags();
-        hashtags.sortTags();
-        console.log(mentions);
-        console.log(hashtags);
-
-        mentions.column = MY_MENTIONS_COLUMN;
-        hashtags.column = MY_TAGS_COLUMN;
-//    mentions.addTagListToColumn();
-//    hashtags.addTagListToColumn();
-
-        addTagCloudToColumn(mentions.tags, mentions.column);
-        addTagCloudToColumn(hashtags.tags, hashtags.column);
-
-
-
     });
-
-    /*
-     var myMentions = new TagList();
-     myMentions.title = 'My Mentions';
-     myMentions.column = MY_MENTIONS_COLUMN;
-     myMentions.type = TagListTypes.Mentions;
-     myMentions.addTag('@donjannah');
-     myMentions.addTag('@donjannah');
-     myMentions.addTag('@donjannah');
-     for (var i = 1; i <= 10; i++) {
-     myMentions.addTag('@test-' + i);
-     myMentions.tags['@test-' + i] = Math.floor((Math.random() * 20) + 1);
-     }
-     
-     //    console.log(myMentions);
-     addTagCloudToColumn(myMentions.tags, FRIENDS_MENTIONS_COLUMN);
-     myMentions.sortTags();
-     for (var key in myMentions.tags)
-     {
-     //        console.log('Adding ' + key + 'to ' + myMentions.column);
-     addItemToColumn(key, myMentions.column);
-     }
-     */
-
-
-
-
 }
 
-
+/**
+ * Load the homeline of Dummy User
+ * @returns {undefined}
+ */
 function loadHomeLine()
 {
     var deferredObject = getHomeTimeline(800);
-     deferredObject.done(function(data) {
-         console.log('retrieved home timeline');
-         
-         
-         var tweets = convertToTweets(data);
-//      addTweetsToPreview(tweets);
-        var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets);
-
-        var mentions = loadedTagsMentions.mentions;
-        var hashtags = loadedTagsMentions.hashtags;
-
-        mentions.sortTags();
-        hashtags.sortTags();
-        console.log(mentions);
-        console.log(hashtags);
-
-        mentions.column = FRIENDS_MENTIONS_COLUMN;
-        hashtags.column = FRIENDS_TAGS_COLUMN;
-
-
-        addTagCloudToColumn(mentions.tags, mentions.column);
-        addTagCloudToColumn(hashtags.tags, hashtags.column);
-         
-     });
-     
+    deferredObject.done(function(data) {
+        var tweets = convertToTweets(data);
+        processTweetsData(tweets, FRIENDS_MENTIONS_COLUMN, FRIENDS_TAGS_COLUMN);
+    });
 }
 
-  function initializeMap()
+function loadTweetsByLocation(lat, long, query, radius)
+{
+    console.log('loading tweeter around ' + lat + ',' + long);
+    var deferredObject = getSearchResults(query, 800, parseTwitterLocation(lat, long, radius));
+    deferredObject.done(function(data) {
+//        console.log(data);
+        var tweets = convertToTweets(data[0]);
+
+        processTweetsData(tweets, NEAR_MENTIONS_COLUMN, NEAR_TAGS_COLUMN);
+    });
+}
+
+function processTweetsData(tweets, mentionColumn, hashColumn)
+{
+    //      addTweetsToPreview(tweets);
+    addTweetsToMap(tweets);
+    var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets);
+    var mentions = loadedTagsMentions.mentions;
+    var hashtags = loadedTagsMentions.hashtags;
+    mentions.sortTags();
+    hashtags.sortTags();
+//    console.log(mentions);
+//    console.log(hashtags);
+    if (mentionColumn)
+    {
+        mentions.column = mentionColumn;
+        addTagCloudToColumn(mentions.tags, mentions.column);
+    }
+    if (hashColumn)
+    {
+        hashtags.column = hashColumn;
+        addTagCloudToColumn(hashtags.tags, hashtags.column);
+    }
+//    return 
+}
+
+/*----------------------------------------------
+ *                  Map Actions                 |
+ *----------------------------------------------*/
+/**
+ * Initialize Map
+ * @returns {undefined}
+ */
+function initializeMap()
 {
     if (navigator.geolocation)
     {
@@ -453,27 +506,103 @@ function loadHomeLine()
         return;
     }
 }
+/**
+ * 
+ * @param {position} position
+ * @returns {undefined}
+ */
 function showPosition(position)
 {
 
     var lat = position.coords.latitude;
     var lon = position.coords.longitude;
-    var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    console.log("Latitude: " + lat + "\nLongitude: " + lon);
+//    var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+//    console.log("Latitude: " + lat + "\nLongitude: " + lon);
 
-//    $("#lat-label").text(lat);
+    //    $("#lat-label").text(lat);
 //    $("#lon-label").text(lon);
-    var mapOptions = {
-        center: latlng,
-        zoom: 16,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    var map = new google.maps.Map(document.getElementById("map-canvas"),
-            mapOptions);
+
+    centerMap(lat, lon);
+    var title = "You are here! (at least within a "
+            + position.coords.accuracy + " meter radius)";
+    addMarkerToMap(lat, lon, title);
+
+    loadTweetsByLocation(lat, lon, 3);
+    /*   var mapOptions = {
+     center: latlng,
+     zoom: 16,
+     mapTypeId: google.maps.MapTypeId.ROADMAP
+     };
+     var map = new google.maps.Map(document.getElementById("map-canvas"),
+     mapOptions);
+     
+     var marker = new google.maps.Marker({
+     position: latlng,
+     map: map,
+     title: "You are here! (at least within a " + position.coords.accuracy + " meter radius)"
+     });*/
+}
+/**
+ * Add marker to map by latitude and longitude
+ * @param {number} lat
+ * @param {number} long
+ * @param {string} title
+ * @returns {undefined}
+ */
+function addMarkerToMap(lat, long, title)
+{
+    var latlng = new google.maps.LatLng(lat, long);
+//    var mapOptions = {
+////        center: latlng,
+////        zoom: 16,
+//        mapTypeId: google.maps.MapTypeId.ROADMAP
+//    };
+//    var map = google.maps.Map(document.getElementById("map-canvas"),
+//            mapOptions);
 
     var marker = new google.maps.Marker({
         position: latlng,
         map: map,
-        title: "You are here! (at least within a " + position.coords.accuracy + " meter radius)"
+        title: title
     });
+
+    console.log('Marker added\t' + latlng + "\t" + title);
+    console.log(marker);
+}
+/**
+ * Center the map to specified coordinates
+ * @param {string} lat
+ * @param {string} long
+ * @returns {undefined}
+ */
+function centerMap(lat, long)
+{
+    var latlng = new google.maps.LatLng(lat, long);
+    var mapOptions = {
+        center: latlng,
+        zoom: 12,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+
+    console.log('Map centered to ' + latlng);
+}
+
+function addTweetsToMap(tweets)
+{
+    for (var i = 0, j = tweets.length; i < j; i++)
+    {
+        var tweet = new Tweet();
+        tweet = tweets[i];
+
+        if (tweet.coordinates)
+        {
+            console.log('adding user marker: ' + tweet.coordinates.lat+','+tweet.coordinates.long);
+            addMarkerToMap(tweet.coordinates.lat,
+                    tweet.coordinates.long,
+                    tweet.user.screen_name);
+        }
+    }
 }

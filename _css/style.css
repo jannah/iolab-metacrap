@@ -61,46 +61,11 @@ main{
     width: 360px;
     float: left; 
 }
-
+/* General */
 .area{
     border-radius: 10px;
     background:white;
     margin: 10px 0;
-}
-/*#submit-tweet-area{
-    width:820px;
-    float:left;
-    display:inline-block;
-    margin:inherit;
-}*/
-
-
-/* AREAS*/
-
-#login-area, #tweet-area{
-    /*margin: 0px auto;*/
-    /*position: relative;*/
-    width: 100%;
-    display:block;
-    text-align: center;
-}
-#login-form,#tweet-form{
-    padding:10px;
-}
-#tweets-preview-area{
-    width:100%;
-    background-color: white;
-    display:inline-block;
-    margin:0 auto;
-
-}
-#tweets-preview-feed{
-    overflow: auto;
-    padding: 5px;
-    float:left;
-    display:inline-block;
-    /*height:600px;*/
-
 }
 
 .area-header{
@@ -114,37 +79,109 @@ main{
     border-radius: 10px 10px 0 0;
 }
 
+
+/* Left Side Bar */
+
+#login-area, #tweet-area{
+    /*margin: 0px auto;*/
+    /*position: relative;*/
+    width: 100%;
+    display:block;
+    text-align: center;
+}
+#login-form,#tweet-form{
+    padding:10px;
+}
+#tweet-text{
+    width:96%;
+    padding:2%;
+    height:60px;
+    vertical-align: text-top;
+    text-wrap: unristricted;
+    resize: none;
+}
+#tweets-preview-area{
+    width:100%;
+    background-color: white;
+    display:inline-block;
+    margin:0 auto;
+
+}
+#tweets-preview-feed{
+    overflow: auto;
+    padding: 0;
+    display:inline-block;
+    width:100%;
+
+}
+
+
+
+/* tweetsm */
+.tweet{
+    border-bottom: 1px solid #a2a2a2;
+    background-color:white;
+    padding:5%;
+    text-align: left;
+    width:90%;
+ 
+}
+
+.tweet img{
+    height:50px;
+    width: 50px;
+    margin:2px;
+    float:left;   
+}
+
+.tweet h1{
+    font-size:1em;
+    float:left;
+    margin: 0 2px;
+}
+.tweet p{
+    font-size: .75em;
+}
+
+
+/* Suggestion Area*/
 .column-header{
-    /*display:inline-block;*/
     padding:5px;
-
-    /*width:390px;*/
-
     background-color: #1fa1fa;
 }
 #suggestion-area{
-    margin: 0px auto;
+    margin: 10px auto;
     /*position: relative;*/
     width: 800px;
+    padding 10px;
     display:inline-block;
     float: right;
     text-align: center;
 }
+#map-canvas{
 
+    height: 300px;
+    width: 100%;
+    display: inline-block;
+    float: none;
+}
 .suggestion-column{
 
     text-align: center;
-    display:none;
+    display:block;
     float:left;
-    width:380px;
+    width:250px;
     padding:0px;
-    margin: 10px;
+    margin: 10px 10px 0 0;
 
 }
 
-
+/* tags */
 .tag{    
-    padding: 10px;
+    padding: 5%;
+    max-width: 90%;
+    word-wrap:  break-word;
+        ;
     font-size: large;
     text-align:center;
     display: inline-block;
@@ -161,44 +198,8 @@ main{
     cursor: pointer; cursor: hand;
 }
 
-#tweet-text{
-    width:98%;
-    padding:5px;
-    height:60px;
-    vertical-align: text-top;
-    text-wrap: unristricted;
 
-    resize: none;
-}
-.tweet{
-    border-bottom: 1px solid #a2a2a2;
-    background-color:white;
-    padding:5px;
-}
-
-.tweet img{
-    height:80px;
-    width: 80px;
-    margin:2px;
-    float:left;   
-}
-
-.tweet h1{
-    text-size:large;
-    float:left;
-    margin: 0 2px;
-}
-.tweet p{
-    text-size: small;
-}
 
 .borders{
     border: 1px solid #C0DEED;
-}
-#map-canvas{
-
-    height: 300px;
-    width: 350px;
-    display: inline-block;
-    float: none;
 }

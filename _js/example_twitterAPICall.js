@@ -4,11 +4,11 @@
     Please reference twitterAPI.js for interface
 */
 
-$(document).ready(function () {
+//$(document).ready(function () {
 
 
     
-    console.log("Testing API Call???");
+//    console.log("Testing API Call???");
 
 /* 
     Any Twitter "Get" Call can be generalized and called with the callTwitterAPI(paramenters, api) function
@@ -16,12 +16,12 @@ $(document).ready(function () {
     This allows you to invoke the full range of optional parameters for each Twitter API Call generically.
 */
     // get user timline
-    var deferredObject = getUserTimeline("UCBerkeley", 10);
-    deferredObject.done(function (data) {
-        console.log("User Timeline Data:");
-        console.log(data);
-        console.log("\n");
-    });
+//    var deferredObject = getUserTimeline("UCBerkeley", 10);
+//    deferredObject.done(function (data) {
+//        console.log("User Timeline Data:");
+//        console.log(data);
+//        console.log("\n");
+//    });
     // equivalent to generic api call:
 
     //testTwitterUsertimeline();
@@ -107,4 +107,4 @@ $(document).ready(function () {
 	
 =======
     });*/
-});
+//});

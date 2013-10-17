@@ -32,29 +32,41 @@ function Tweet(/*tweetObj */) {
     {
 
         var tweetObj = arguments[0];
-        this.coordinates = tweetObj.coordinates;
+
+
+        var coords = (tweetObj.coordinates) ?
+                tweetObj.coordinates :
+                (tweetObj.geo) ?
+                tweetObj.geo[0] : null;
+        if (coords)
+        {
+//            console.log(coords);
+            this.coordinates = {'type': coords.type,
+                'lat': coords.coordinates[0], 
+                'long': coords.coordinates[1]};
+            console.log(this.coordinates);
+//            console.log(tweetObj.coordinates);
+//            console.log(tweetObj.geo);
+        }
+
+
         this.created_at = tweetObj.created_at;
         this.entities = tweetObj.entities;
         this.hashtags = [];
         for (var i in tweetObj.entities.hashtags)
         {
-//            console.log(tweetObj.entities.hashtags[i].text);
             this.hashtags.push(tweetObj.entities.hashtags[i].text);
-//            this.user_mentions.push(mention);
         }
-//        ]tweetObj.entities.hashtags;
-
         this.user_mentions = [];
         for (var i in tweetObj.entities.user_mentions)
         {
             var mention = new UserMention(tweetObj.entities.user_mentions[i]);
             this.user_mentions.push(mention);
         }
-
         this.urls = tweetObj.entities.urls;
         this.text = tweetObj.text;
         this.user = new TwitterUser(tweetObj.user);
-//        console.log(this);
+
     }
     else {
         this.coordinates;
@@ -74,7 +86,7 @@ function getHTMLFormat() {
     str += "<img src='" + this.user.profile_image_url + "'";
     str += " alt='" + this.user.screen_name + "'/>";
     str += "<h1>" + this.user.screen_name + "</h1>  <h2>";
-    str += " "+ this.user.name + "<h2><br><p>";
+    str += " " + this.user.name + "<h2><br><p>";
     var textArray = this.text.split(' ');
     for (var i = 0, j = textArray.length; i < j; i++)
     {
@@ -89,7 +101,7 @@ function getHTMLFormat() {
         str += ' ';
     }
 
-    str += '</p></div>'
+    str += '</p></div>';
     return str;
 }
 
@@ -134,7 +146,7 @@ function TwitterUser(/*user*/) {
 }
 function convertToTweets(data)
 {
-    console.log(data.length+ " tweets retrieved");
+    console.log(data.length + " tweets retrieved");
     var tweets = [];
     for (var i = 0, j = data.length; i < j; i++)
     {
@@ -149,15 +161,15 @@ function convertToTweets(data)
  */
 function addTweetsToPreview(tweets)
 {
+    $("#tweets-preview-feed").empty();
     for (var i = 0, j = tweets.length; i < j; i++)
     {
         var tweet = tweets[i];
-//        console.log(tweet)
         var element = $(tweet.getHTMLFormat());
         $("#tweets-preview-feed").append(element);
     }
-    $("#tweets-preview-feed").css('height','700px')
-    
+    $("#tweets-preview-feed").css('height', '600px')
+
 }
 
 /**
@@ -213,8 +225,6 @@ function generateTweets(count)
         tweet.text = tweet.text.replace(',', ' ');
         tweets.push(tweet);
     }
-
-//    console.log(tweets);
     return tweets;
 }
 
@@ -228,23 +238,6 @@ function getRandomNumber(lower, upper)
 {
     return  Math.floor((Math.random() * upper) + lower);
 }
-/*
- function getRequest()
- {
- $.get('https://api.twitter.com/1/statuses/home_timeline.json',
- {'OAuth': 'oauth_consumer_key = 'hXbF1F2QUVnJcjqj8vUBQ','
- + ' oauth_nonce = '73d2b87f572d0072b87a757ec1d0adb3','
- + ' oauth_signature = 'D9YNFlg6%2Bsflb1rOMfkM6HvJ5gc%3D','
- + ' oauth_signature_method = 'HMAC-SHA1', '
- + 'oauth_timestamp = '1381367017', '
- + 'oauth_token = '22654218-QoAwLex61Qu43j7wfqli78SgnnuUm1oymDfDI9Gw','
- + ' oauth_version = '1.0'',
- 'Access-Control-Allow-Origin': '*'}, function(data) {
- console.log(data);
- });
- }
- */
-
 
 var sampleTweets = [
     {
@@ -483,3 +476,4 @@ var sampleTweets = [
         "in_reply_to_status_id": null
     },
 ];
+
