@@ -13,6 +13,7 @@ and open the template in the editor.
         <script src="_js/script.js"></script>
         <script src="_js/twitterAPI.js"></script>
         <script src="_js/TwitterObjects.js"></script>
+        <script src="_js/example_twitterAPICall.js"></script>
 
         <link rel="stylesheet" type="text/css" href='_css/style.css'>
         <link rel="stylesheet" type="text/css" href="_css/reset.css">
@@ -20,59 +21,64 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
     </head>
-    <body> <div id="container">
-            <header>
-                Tweet for Dummies!
-            </header>
-            <main> 
-                <div id="submit-tweet-area">
-                    <br>
-                    <div id="login-area" class="borders">
-                        <h1><label class="area-header">Login Area</label></h1>
-                        <form id="login-form">
-                            <input id="logon-username" type="text" placeholder="Twitter username"/>
-                            <input id="logon-password" type="password"/>
-                            <input id="logon-submit" type="submit" value="Login"/>
-                        </form>
-                    </div>
-                    <br>
-                    <div id="tweet-area" class="borders">
-                        <h1><label class="area-header">Tweet Area</label></h1>
-                        <form id="tweet-form">
-                            <textarea id="tweet-text"  placeholder="Tweet!"></textarea>
-                            <input id="tweet-submit" type="submit" value="Tweet"/>
-                            <label id="tweet-length-label"></label>
-                        </form>
-                    </div>
-                    <br>
-                    <div id="suggestion-area">
+    <body> 
+        <header>
+            <h1>Tweet for Dummies!</h1>
+        </header>
+    <main> 
+        <div id="container"></div>
+        <div id="submit-tweet-area">
+            <br>
+            <div id="login-area" class="borders area">
+                <h1><label class="area-header">Login Area</label></h1>
+                <form id="login-form">
+                    <input id="logon-username" type="text" placeholder="Twitter username" value="UCBerkeley"/>
+                    <input id="logon-password" type="password"/>
+                    <input id="logon-submit" type="submit" value="Login"/>
+                </form>
+            </div>
+            <br>
+            <div id="tweet-area" class="borders area">
+                <h1><label class="area-header">Tweet Area</label></h1>
+                <form id="tweet-form">
+                    <textarea id="tweet-text"  placeholder="Tweet!"></textarea>
+                    <input id="tweet-submit" type="submit" value="Tweet"/>
+                    <label id="tweet-length-label"></label>
+                </form>
+            </div>
+            <br>
+            <div id="suggestion-area" class="area">
 
-                        <div class="suggestion-column borders" id="my-mentions-column">
-                            <div class="column-header"><h2>My Mentions</h2></div>
+                <div class="suggestion-column borders area" id="my-mentions-column">
 
-                        </div>
+                    <h2><label class="area-header">My Mentions</label></h2>
 
-                        <div class="suggestion-column borders" id="friend-mentions-column">
-                            <div class="column-header"><h2>Friends' Mentions</h2></div>
-                        </div>
-
-                        <div class="suggestion-column borders" id="my-tags-column">
-                            <div class="column-header"><h2>My Hashtags</h2></div>
-                        </div>
-
-                        <div class="suggestion-column borders" id="friend-tags-column">
-                            <div class="column-header"><h2>Friends' Hashtags</h2></div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tweets-preview-area">
-<h1><label class="area-header">Preview</label></h1>
                 </div>
 
-            </main>
-            <footer>
+                <div class="suggestion-column borders area" id="friend-mentions-column">
+                    <h2><label class="area-header">Friends' Mentions</label></h2>
+                </div>
 
-            </footer>
+                <div class="suggestion-column borders area" id="my-tags-column">
+                    <h2><label class="area-header">My Hashtags</label></h2>
+                </div>
+
+                <div class="suggestion-column borders area" id="friend-tags-column">
+                    <h2><label class="area-header">Friends' Hashtags</label></h2>
+                </div>
+            </div>
         </div>
-    </body>
+        <div id="tweets-preview-area" class="area">
+            <h1><label class="area-header">Preview</label></h1>
+
+            <div id="tweets-preview-feed">
+            </div>
+        </div>
+
+    </main>
+    <footer>
+
+    </footer>
+
+</body>
 </html>

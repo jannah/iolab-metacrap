@@ -5,6 +5,7 @@
 */
 
 $(document).ready(function () {
+<<<<<<< HEAD
 
     
     console.log("Testing API Call???");
@@ -22,6 +23,12 @@ $(document).ready(function () {
         console.log("\n");
     });
     // equivalent to generic api call:
+=======
+    //testTwitterUsertimeline();
+   /* console.log("Testing API Call");
+
+    var parameters = { 'screen_name': 'UCBerkeley', 'count': 100 };
+>>>>>>> master
     var api = '1.1/statuses/user_timeline';
     var parameters = { 'screen_name': "UCBerkeley", 'count': 10 };
     deferredObject = callTwitterAPI(parameters, api);
@@ -88,6 +95,7 @@ $(document).ready(function () {
 
 
 
+<<<<<<< HEAD
     // post Tweet
     // return effor if you try to tweet the same tweet text twice 
     var tweet = 'Go Bears!';
@@ -97,4 +105,7 @@ $(document).ready(function () {
         console.log(data);
     });
 	
+=======
+    });*/
+>>>>>>> master
 });
