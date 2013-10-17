@@ -225,18 +225,18 @@ function addTagCloudToColumn(tags, header)
     {
         var itemHTML = $(cloud[i]);
         $(column).append(itemHTML);
-        if (i < DISPLAYED_TAGS_LIMIT)
-        {
-            $(column).children('.tag').last().hide().fadeIn(500);
-        }
-        else
-        {
-            $(column).children('.tag').last().addClass('tag-hidden').hide();
-        }
+        $(column).children('.tag').last().addClass('tag-hidden').hide();
+        /*
+         if (i < DISPLAYED_TAGS_LIMIT)
+         {
+         $(column).children('.tag').last().hide().fadeIn(500);
+         }
+         else
+         {
+         $(column).children('.tag').last().addClass('tag-hidden').hide();
+         }
+         */
     }
-    var moreButton = $("<input type='button' class='view-more-tags-button' value='more..'/>");
-    $(column).append(moreButton);
-    eventViewMoreTags();
     eventAppendItemToTweet();
     console.log('New column added');
 }
@@ -247,17 +247,31 @@ function addTagCloudToColumn(tags, header)
  */
 function addColumnToSuggestions(header)
 {
-
+    /*
+     var moreButton = $("<input type='button' class='view-more-tags-button' value='more..'/>");
+     var lessButton = $("<input type='button' class='view-less-tags-button' value='less..'/>");
+     $(column).append(lessButton);
+     $(column).append(moreButton);
+     */
     var itemHTML = $("<li class='suggestion-column area'>"
-            + "<h2><label class='area-header'>" + header
-            + "</label></h2></li>");
+
+            + "<h2>"
+            + "<lable class='area-header'>"
+            + header
+            + "</label>"
+            + "</h2>"
+            + "<input type='button' class='view-more-tags-button' value='+'/>"
+            + "<input type='button' class='view-less-tags-button' value='-'/>"
+
+            + "</li>");
     itemHTML.addClass('suggestion-column')
             .addClass('area');
     $('#suggestion-area ul').append(itemHTML);
 
     var column = $('#suggestion-area ul .suggestion-column').last();
     $(column).show();
-
+    eventViewMoreTags();
+    eventViewLessTags();
     return column;
 //    console.log('column added');
 }
@@ -384,12 +398,32 @@ function eventViewMoreTags()
         {
             var tag = tags.get(i);
             $(tag).removeClass('tag-hidden');
+            $(tag).addClass('tag-shown');
             $(tag).fadeIn(500);
         }
         return false;
     });
 }
 
+function eventViewLessTags()
+{
+//    console.log('adding event: more tags');
+    $('.view-less-tags-button').unbind('click');
+    $('.view-less-tags-button').click(function()
+    {
+        var tags = $(this).siblings('.tag-shown');
+
+        for (var i = 0, m = tags.length - 1; m >= 0 && i < DISPLAYED_TAGS_LIMIT;
+                i++, m--)
+        {
+            var tag = tags.get(m);
+            $(tag).addClass('tag-hidden');
+            $(tag).addClass('tag-shown');
+            $(tag).hide();
+        }
+        return false;
+    });
+}
 /*----------------------------------------------
  *            Twitter Actions                  |
  *----------------------------------------------*/
@@ -599,7 +633,7 @@ function addTweetsToMap(tweets)
 
         if (tweet.coordinates)
         {
-            console.log('adding user marker: ' + tweet.coordinates.lat+','+tweet.coordinates.long);
+            console.log('adding user marker: ' + tweet.coordinates.lat + ',' + tweet.coordinates.long);
             addMarkerToMap(tweet.coordinates.lat,
                     tweet.coordinates.long,
                     tweet.user.screen_name);
