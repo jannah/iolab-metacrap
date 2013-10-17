@@ -21,14 +21,25 @@ $connection = new tmhOAuth(array(
 
 $parameters = $_POST['parameters'];
 $api = $_POST['api'];
+$call_type = $_POST['type'];
 $param_array = array();
+
+
 
 foreach($parameters as $key=> $value){	
 	$param_array[$key]= $value;
 }
 
+
+if($call_type =='GET'){
+	$http_code = $connection->request('GET',$connection->url($api), $param_array); 
+}elseif ($call_type == 'POST'){
+	
+	$http_code = $connection->request('POST', $connection->url('1.1/statuses/update'), $param_array);
+}
+
 // Get the timeline with the Twitter API 
-$http_code = $connection->request('GET',$connection->url($api), $param_array); 
+
  
 // Request was successful 
 if ($http_code == 200) { 
@@ -42,7 +53,7 @@ if ($http_code == 200) {
 
  foreach($tweet_data as $tweet) { 
  // Add this tweet's text to the results 
- $tweet_stream .= $tweet['text'] . '<br/><br/>'; 
+ //$tweet_stream .= $tweet['text'] . '<br/><br/>'; 
  array_push($return_value, $tweet);
  } 
  
