@@ -641,10 +641,10 @@ function addTweetsToMap(tweets)
     }
 }
 
-var text=$("#tweet-text").val() + "";
 
 function createKeys(text)
 {
+	console.log(text);
 	var patt1= new RegExp("http");
 	var patt2= /\w+\W+\w+/;
 	var patt3= /\W(\W+)/;
@@ -690,6 +690,5 @@ function returnKeys(keys){
 		error: function(data){
 			
 		}
-	}
-}
+	});
 }
