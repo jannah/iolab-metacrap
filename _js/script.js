@@ -640,3 +640,50 @@ function addTweetsToMap(tweets)
         }
     }
 }
+
+function createKeys()
+{
+	var patt1= new RegExp("http");
+	var patt2= /\w+\W+\w+/;
+	var patt3= /\W(\W+)/;
+	var patt4= /\W/
+	var keys=new Array();
+	var text=$("#tweet-text").val() + "";
+	var f_words= text.split(" ");
+	var words=new Array();
+	for(var i=0;i<f_words.length;i++){
+		if(patt3.test(f_words[i]) && !patt1.test(f_words[i])){
+			f_words[i]=f_words[i].split(patt3)[0];
+			words.push(f_words[i]);
+		}
+		else if(patt2.test(f_words[i]) && !patt1.test(f_words[i]))
+			{
+				var temp=f_words[i].split(patt4);
+				words.push(temp[0]);
+				words.push(temp[1]);
+			}
+		else words.push(f_words[i]);
+			
+	}
+	for(var i=0;i<words.length;i++){
+		if(words[i].length > 3 && words[i].substr(0,1)!="#" && words[i].substr(0,1)!="@" && !patt1.test(words[i])){
+				keys.push(words[i])
+		}
+		for(var k=0;k<keys.length;k++){
+			keys[k]=keys[k].toLowerCase();
+		}
+	}
+	$.ajax({
+		url:'keys.php',
+		type: "POST",
+		dataType:"json",
+		data: 
+		{'jsonkey':keys},
+		success: function(data){
+			console.log(data);
+		},
+		error: function(data){
+			
+		}
+	});
+}	
