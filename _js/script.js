@@ -641,14 +641,15 @@ function addTweetsToMap(tweets)
     }
 }
 
-function createKeys()
+var text=$("#tweet-text").val() + "";
+
+function createKeys(text)
 {
 	var patt1= new RegExp("http");
 	var patt2= /\w+\W+\w+/;
 	var patt3= /\W(\W+)/;
 	var patt4= /\W/
 	var keys=new Array();
-	var text=$("#tweet-text").val() + "";
 	var f_words= text.split(" ");
 	var words=new Array();
 	for(var i=0;i<f_words.length;i++){
@@ -673,7 +674,11 @@ function createKeys()
 			keys[k]=keys[k].toLowerCase();
 		}
 	}
-	$.ajax({
+	var deferredObject= returnKeys(keys);
+}	
+
+function returnKeys(keys){
+	return $.ajax({
 		url:'keys.php',
 		type: "POST",
 		dataType:"json",
@@ -685,5 +690,6 @@ function createKeys()
 		error: function(data){
 			
 		}
-	});
-}	
+	}
+}
+}
