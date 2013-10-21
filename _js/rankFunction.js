@@ -3,60 +3,50 @@
     Example to call the API as a deferred object.
     Please reference twitterAPI.js for interface
 */
+var current_position;
+
+function geoSearch(pos) {
+    var crd = pos.coords;
+
+    //console.log('Your current position is:');
+    //console.log('Latitude : ' + crd.latitude);
+    //console.log('Longitude: ' + crd.longitude);
+    //console.log('More or less ' + crd.accuracy + ' meters.');
+    var coords = crd.latitude + ',' + crd.longitude + ',20mi';
+       
+
+    var word_list = createKeys($('#tweet-text').val());
+    word_list.done(function (data) {
+        var master_histogram = {};
+        generateSearchHistogram(data, master_histogram,coords).done(function () {
+            console.log("Local Histogram Completed");
+            console.log(master_histogram);
+            console.log(sortHistogram(master_histogram));
+            addTagCloudToColumn(master_histogram, "local Tags");
+        });
+    });
+}
 
 function rankFunction() {
 
-    
-    console.log("Testing API Call???");
-
-/* 
-    Any Twitter "Get" Call can be generalized and called with the callTwitterAPI(paramenters, api) function
-    See the examples here for the helper functions which basically format and call the callTwitterAPI function correctly
-    This allows you to invoke the full range of optional parameters for each Twitter API Call generically.
-*/
-     //get user timline
-
-
-	
-    //get results from a Twitter Query with geolocations    
-    // format 'lat, long, distance' 37.872516,-122.260844 is location of UC Berkeley 
-    //deferredObject = getSearchResults('nobel prize berkeley', 5, location);
-    //deferredObject.done(function (data) {
-    //    console.log("Search Query Data");
-    //    //console.log(data);
-    //    console.log("\n");
-    //});
-
-    var location = { 'geocode': "37.872516,-122.260844, 1mi" }
-    var query = "hot dog";
-    var count = 100;
-    var tweets;
-     //equivalent to generic api call:
-    var api = '1.1/search/tweets';
-    parameters = {
-        'q': urlencode(query), // twitter search api requires URL encoded string urlencode(string) is a helper function
-        'count': count,
-        'geolocation': location
-    };
-
-
-    //
-    $('#tweet-tag-suggest').click(function () {
-        var word_list = createKeys($('#tweet-text').val());
-        word_list.done(function (data) {
-            var master_histogram = {};
-            generateSearchHistogram(data, master_histogram).done( function(){
-                console.log("Master Histogram Completed");
-                console.log(master_histogram);
-                sortHistogram(master_histogram);
-            });
-
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(geoSearch);
+    }
+                    
+   
+    var word_list = createKeys($('#tweet-text').val());
+    word_list.done(function (data) {
+        var master_histogram = {};
+        generateSearchHistogram(data, master_histogram,null).done( function(){
+            console.log("Universal Histogram Completed");
+            console.log(master_histogram);
+            console.log(sortHistogram(master_histogram));        
+            addTagCloudToColumn(master_histogram, "Popular Tags");
         });
     });
 
-    
 
-
+   
     //var histogram_universe = {};
     //var histogram_local = {};
 
@@ -78,54 +68,70 @@ function rankFunction() {
     //    console.log("Local: " , histogram_local);
     //    console.log("\n");
     //});
-
-    //get results from a Twitter Query without geolocation    
-
-
-    
-    $('#histogram').append( "<li> something here </li>");
- 
-	
     
 }
 
 function getHashTagsFromSearch(word, master_histogram) {
-
     return getSearchResults(word, 100).pipe(function (data) {        
+        var tweets = convertToTweets(data[0]);        
+        $.each(tweets, function (index, value) {
+            if (value.hashtags.length > 0) {
+                // console.log(value.hashtags);
+                for (var counter = 0; counter < value.hashtags.length; counter++) {
+                    var string_value = '#' + value.hashtags[counter];
+                    addToDictionary(master_histogram, string_value);
+                }
+            }
+        });
+        //console.log("Histogram for ", word, " size ", sizeofObject(master_histogram));
+        //console.log(master_histogram, "\n");
+        return master_histogram;
+    });
+}
+
+
+function getHashTagsFromLocalSearch(word, master_histogram,location) {
+    return getSearchResults(word, 100,location).pipe(function (data) {
         var tweets = convertToTweets(data[0]);
         $.each(tweets, function (index, value) {
             if (value.hashtags.length > 0) {
                 // console.log(value.hashtags);
                 for (var counter = 0; counter < value.hashtags.length; counter++) {
-                    addToDictionary(master_histogram, value.hashtags[counter]);
+                    var string_value = '#' + value.hashtags[counter];
+                    addToDictionary(master_histogram, string_value);
                 }
             }
         });
-        console.log("Histogram for ", word, " size ", sizeofObject(master_histogram));
-        console.log(master_histogram, "\n");
+        //console.log("Histogram for ", word, " size ", sizeofObject(master_histogram));
+        //console.log(master_histogram, "\n");
         return master_histogram;
     });
 }
 
-function generateSearchHistogram(text_list, master_histogram) {
-    var histogram = {};
-    var api_call_list = $.map(text_list, function (query) {
-        return getHashTagsFromSearch(query, master_histogram);
+function findMinTwitterID(tweets) {
+    var min_id = tweets[0].id;
+    $.each(tweets, function (key, value) {
+        if (value.id < min_id) {
+            min_id = value.id;
+        }
     });
-
-    return $.when.apply($, api_call_list);
+    return min_id;
 }
 
+function generateSearchHistogram(text_list, master_histogram, location) {
+    var histogram = {};
 
-function print_histogram(dom_location, histogram) {
-    
-    var text = "<li> ";
-    $.each(histogram, function (key, value) {
-        text += "[" + key + ":" + value + "]" + "  ";
-    });
-    text += " </li>";
-    $('#histogram_list').append("<li> something here </li>");
-
+    if (location == null) {
+        var api_call_list = $.map(text_list, function (query) {
+            return getHashTagsFromSearch(query, master_histogram);
+        });
+        return $.when.apply($, api_call_list);
+    } else {
+        var api_call_list = $.map(text_list, function (query) {
+            return getHashTagsFromLocalSearch(query, master_histogram,location);
+        });
+        return $.when.apply($, api_call_list);
+    }
 }
 
 function sizeofObject(object) {
@@ -164,7 +170,7 @@ function sortHistogram(histogram) {
             result[0].hashtags.push(key);
         }
     });
-    var temp =sorted.sort(function(a,b){
+    var sorted_histogram =sorted.sort(function(a,b){
         if (a.number > b.number)
             return -1;
         if (a.number < b.number)
@@ -172,6 +178,14 @@ function sortHistogram(histogram) {
         // a must be equal to b
         return 0;
     });
-    console.log(temp);
-    return sorted;
+    
+    var hashtag_list = [];
+    for (var counter = 0; counter < sorted_histogram.length; counter++) {
+        $.each(sorted_histogram[counter].hashtags, function (key, value) {
+            hashtag_list.push(value);
+        });
+    }
+    //console.log(hashtag_list);
+    //return hashtag_list;
+    return sorted_histogram;
 }
