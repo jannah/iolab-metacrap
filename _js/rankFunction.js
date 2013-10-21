@@ -1,13 +1,34 @@
- 
 /*
-    Example to call the API as a deferred object.
-    Please reference twitterAPI.js for interface
+   rankFunction is invoked on the onClick from the html
+   Invokes createKeys which extracts the array of strings to perform searches
 */
-var current_position;
+function rankFunction() {
+
+    // Grab the current position and run search API with location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(geoSearch);
+    }
+
+    // Run separate Universal Search
+    var word_list = createKeys($('#tweet-text').val());
+    word_list.done(function (data) {
+        var master_histogram = {};
+        generateSearchHistogram(data, master_histogram, null).done(function () {
+            console.log("Universal Histogram Completed");
+            console.log(master_histogram);
+            console.log(sortHistogram(master_histogram));
+            addTagCloudToColumn(master_histogram, "Popular Tags");
+        });
+    });
+
+}
+
+/*
+    geoSearch grabs the current location and invokes the hashtag popularity search with location
+*/
 
 function geoSearch(pos) {
     var crd = pos.coords;
-
     //console.log('Your current position is:');
     //console.log('Latitude : ' + crd.latitude);
     //console.log('Longitude: ' + crd.longitude);
@@ -27,49 +48,13 @@ function geoSearch(pos) {
     });
 }
 
-function rankFunction() {
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(geoSearch);
-    }
-                    
-   
-    var word_list = createKeys($('#tweet-text').val());
-    word_list.done(function (data) {
-        var master_histogram = {};
-        generateSearchHistogram(data, master_histogram,null).done( function(){
-            console.log("Universal Histogram Completed");
-            console.log(master_histogram);
-            console.log(sortHistogram(master_histogram));        
-            addTagCloudToColumn(master_histogram, "Popular Tags");
-        });
-    });
-
-
-   
-    //var histogram_universe = {};
-    //var histogram_local = {};
-
-    //deferredObject = callTwitterAPI(parameters,api);
-    //deferredObject.done(function (data) {
-    //    console.log("Equivalent Search API using generic API CALL");
-    //    console.log(data);
-    //    tweets = convertToTweets(data[0]);        
-    //    console.log("Local Results &&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-    //    $.each(tweets, function (index, value) {
-
-    //        if (value.hashtags.length > 0) {
-    //            //console.log(value.hashtags);
-    //            for (var counter = 0; counter < value.hashtags.length; counter++) {
-    //                addToDictionary(histogram_local, value.hashtags[counter]);
-    //            }
-    //        }
-    //    });
-    //    console.log("Local: " , histogram_local);
-    //    console.log("\n");
-    //});
-    
-}
+/*
+   geHashTagsFromSearch invokes a single search API call with the string paramater "word" and appents to the given "master_histogram"
+   Parameters:
+    word as String
+    master_histogram as Java Object with key:value pairs
+   Returns: deferred object  
+*/
 
 function getHashTagsFromSearch(word, master_histogram) {
     return getSearchResults(word, 100).pipe(function (data) {        
@@ -89,6 +74,13 @@ function getHashTagsFromSearch(word, master_histogram) {
     });
 }
 
+/*
+   geHashTagsFromSearch invokes a single local search API call with the string paramater "word" and appents to the given "master_histogram"
+   Parameters:
+    word as String
+    master_histogram as Java Object with key:value pairs
+   Returns: deferred object  
+*/
 
 function getHashTagsFromLocalSearch(word, master_histogram,location) {
     return getSearchResults(word, 100,location).pipe(function (data) {
@@ -108,6 +100,9 @@ function getHashTagsFromLocalSearch(word, master_histogram,location) {
     });
 }
 
+/*
+  Ignore
+*/
 function findMinTwitterID(tweets) {
     var min_id = tweets[0].id;
     $.each(tweets, function (key, value) {
@@ -117,6 +112,18 @@ function findMinTwitterID(tweets) {
     });
     return min_id;
 }
+
+/*
+    generateSearchHistogram runs a separate either local/universal search query on each of the words in the "text_list"
+    Function waits until all of the API search calls are completed before returning the final deferred obejct
+
+    Parameters:
+        text_list as String Array
+        master_histogram as Javascript Object array of key:value
+        location as string representation of { crd.latitude + ',' + crd.longitude + ',20mi'
+    Return:
+        deferred object
+*/
 
 function generateSearchHistogram(text_list, master_histogram, location) {
     var histogram = {};
@@ -134,6 +141,10 @@ function generateSearchHistogram(text_list, master_histogram, location) {
     }
 }
 
+/*
+    sizeofObject returns the number of top level keys 
+*/
+
 function sizeofObject(object) {
     var size=0;
     $.each(object, function () {
@@ -141,6 +152,14 @@ function sizeofObject(object) {
     });
     return size;
 }
+
+/*
+    addToDictionary
+
+    Parameters:
+        diction as Javascript object of key:value pairs
+        element as string to add
+*/
 
 function addToDictionary(dictionary, element) {
     //console.log(dictionary, element, dictionary[element]);
@@ -153,6 +172,14 @@ function addToDictionary(dictionary, element) {
     }
 
 }
+
+/*
+    sortHistogram takes an unsorted histogram of key:value and returns an array of sorted key:value pairs
+
+    Return:
+        Array of frequency distributions decending wiht the most frequent occurences of hashtags
+        Example: [ {number: 10, hashtags: [#hashtag, #hashtag]}, {number:9, hashtags: [#hashtags]}]
+*/
 
 function sortHistogram(histogram) {
     var sorted = [{ 'number': 1, hashtags: [] }];
@@ -177,8 +204,7 @@ function sortHistogram(histogram) {
             return 1;
         // a must be equal to b
         return 0;
-    });
-    
+    });    
     var hashtag_list = [];
     for (var counter = 0; counter < sorted_histogram.length; counter++) {
         $.each(sorted_histogram[counter].hashtags, function (key, value) {
