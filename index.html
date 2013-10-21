@@ -13,7 +13,7 @@ and open the template in the editor.
         <script src="_js/script.js"></script>
         <script src="_js/twitterAPI.js"></script>
         <script src="_js/TwitterObjects.js"></script>
-        <script src="_js/example_twitterAPICall.js"></script>
+		<script src="_js/rankFunction.js"></script>        
         <script type="text/javascript"
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDx5Ck9UD6oY6-vbDSPZMM5u-ilt77DvNY&sensor=false">
         </script>
@@ -34,7 +34,7 @@ and open the template in the editor.
                 <h1><label class="area-header">Tweet</label></h1>
                 <form id="tweet-form">
                     <textarea id="tweet-text"  placeholder="Tweet!"></textarea>
-                    <input id="tweet-tag-suggest" type="button" value="Click for Tag Suggestions" onClick="createKeys($('#tweet-text').val()+ '');">
+                    <input id="tweet-tag-suggest" type="button" value="Click for Tag Suggestions" onClick="rankFunction();">
                     <input id="tweet-submit" type="submit" value="Tweet"/>
                     <label id="tweet-length-label"></label>
                 </form>

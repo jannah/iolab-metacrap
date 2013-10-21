@@ -5,6 +5,7 @@
  */
 $(document).ready(function() {
     init();
+    
 });
 
 function init() {
@@ -13,7 +14,7 @@ function init() {
     eventUpdateTweetCount();
     logonToTwitter();
     loadHomeLine();
-    google.maps.event.addDomListener(window, 'load', initializeMap);
+    google.maps.event.addDomListener(window, 'load', initializeMap);    
 //    loadTweetsByScreenName('UCBerkeley');
 
 
@@ -674,7 +675,7 @@ function createKeys(text)
 			keys[k]=keys[k].toLowerCase();
 		}
 	}
-	var deferredObject= returnKeys(keys);
+	return returnKeys(keys);
 }	
 
 function returnKeys(keys){
