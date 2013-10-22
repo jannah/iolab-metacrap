@@ -60,7 +60,7 @@ function getSearchResults(query_string, count) {
 
     api = '1.1/search/tweets';
     parameters = {'q': urlencode(query_string), 'count': count};
-    console.log("string " + query_string + "url encode " + urlencode(query_string));
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>..string " + query_string + "url encode " + urlencode(query_string));
     return callTwitterAPI(parameters, api);
 }
 
@@ -72,9 +72,24 @@ function getSearchResults(query_string, count, location) {
         'count': count,
         'geolocation': location
     };
+    console.log("string " + query_string + "url encode " + urlencode(query_string));
+    return callTwitterAPI(parameters, api);
+}
+
+function getSearchResults(query_string, count, date) {
+
+    api = '1.1/search/tweets';
+    parameters = {
+        'q': urlencode(query_string),
+        'count': count,        
+        'until':date
+    };
     //console.log("string " + query_string + "url encode " + urlencode(query_string));
     return callTwitterAPI(parameters, api);
 }
+
+
+
 /**
  * 
  * @param {number} lat
@@ -173,5 +188,5 @@ function urlencode(str) {
     // Tilde should be allowed unescaped in future versions of PHP (as reflected below), but if you want to reflect current
     // PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the following.
     return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').
-            replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
+            replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '%20');
 }
