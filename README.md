@@ -14,8 +14,8 @@ Suggestions: Recently used hashtags based on what you type in your tweet. To use
 
 Team members and roles:
 - Hassan Jannah: UI and Backend object classes
-- Christopher Fan: API calls, PHP, ranking function
-- Ramit Malhotra: Text analysis backend
+- Christopher Fan: API calls, PHP, & ranking function
+- Ramit Malhotra: Text analysis & backend
 
 Technologies used
 HTML, Javascript, JQuery, Twitter API, PHP
