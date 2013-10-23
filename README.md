@@ -24,4 +24,5 @@ Link to demo version
 http://people.ischool.berkeley.edu/~jannah/iolab-metacrap/index.html
 
 Known bugs
-- Twitter API does not return geolocation. We implemented the ability to add markers to the map but we are not getting location data to display it. 
+- Twitter API does not return geolocation. We implemented the ability to add markers to the map but we are not getting location data to display it.
+- The API uses a single dummy user account to load the homeline. Ideally, a user sholud authenticate to get suggestions based on his own homeline. We tried to get the API to work for sometime. However, we decided to spend the time on the functionality rather than waste a lot of time getting the user authentication to work since the idea is the same.
