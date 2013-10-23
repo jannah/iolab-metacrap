@@ -6,8 +6,6 @@ var PAIR_MULTIPLIER = 25;
  */
 function rankFunction() {
 
-
-
     // Run separate Universal Search
     var word_list = createKeys($('#tweet-text').val());
     word_list.done(function(data) {
@@ -83,6 +81,33 @@ function getHashTagsFromLocalSearch(word, master_histogram, location) {
 }
 
 /*
+   geHashTagsFromSearch invokes a single local search API call with the string paramater "word" and appents to the given "master_histogram"
+   Parameters:
+    word as String
+    master_histogram as Java Object with key:value pairs
+   Returns: deferred object  
+*/
+
+function getHashTagsFromDateSearch(word, master_histogram,rank, date) {
+    return getSearchResultsDate(word, 100, date).pipe(function (data) {
+        var tweets = convertToTweets(data[0]);
+        $.each(tweets, function (index, value) {
+            if (value.hashtags.length > 0) {
+                // console.log(value.hashtags);
+                for (var counter = 0; counter < value.hashtags.length; counter++) {
+                    var string_value = '#' + value.hashtags[counter];
+                    addToDictionary(master_histogram, string_value, 1);
+                }
+            }
+        });
+        //console.log("Histogram for ", word, " size ", sizeofObject(master_histogram));
+        //console.log(master_histogram, "\n");
+        return master_histogram;
+    });
+}
+
+
+/*
  Ignore
  */
 function findMinTwitterID(tweets) {
@@ -145,7 +170,7 @@ function generateSearchHistogram(text_list, master_histogram, location) {
         //console.log("%%%%%%%%%%%%%%%%%%", text_list_yesterday)
         // call search query on single word strings for another day
         api_call_list_yesterday = $.map(text_list, function(query) {
-            return getHashTagsFromSearch(query, master_histogram, 1, getDate());
+            return getHashTagsFromDateSearch(query, master_histogram, 1, getDate());
         });
         //return $.when.apply($, api_call_list);
         return $.when.apply($, api_call_list.concat(api_call_list_yesterday.concat(api_call_list_tuples)));

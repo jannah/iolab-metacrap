@@ -76,7 +76,7 @@ function getSearchResults(query_string, count, location) {
     return callTwitterAPI(parameters, api);
 }
 
-function getSearchResults(query_string, count, date) {
+function getSearchResultsDate(query_string, count, date) {
 
     api = '1.1/search/tweets';
     parameters = {
