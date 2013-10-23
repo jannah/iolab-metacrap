@@ -7,11 +7,11 @@ $(document).ready(function() {
     init();
 
 });
-$(document).ajaxStart(function () {
+$(document).ajaxStart(function() {
     $("#loading-box").show();
 });
 
-$(document).ajaxComplete(function () {
+$(document).ajaxComplete(function() {
     $("#loading-box").delay(500).fadeOut(500);
 });
 function init() {
@@ -327,6 +327,7 @@ function eventViewLessTags()
     $('.view-less-tags-button').unbind('click');
     $('.view-less-tags-button').click(function()
     {
+        $(this).parent().find('.area-header-new').removeClass('area-header-new');
         var tags = $(this).siblings('.tag-shown');
 
         for (var i = 0, m = tags.length - 1; m >= 0 && i < DISPLAYED_TAGS_LIMIT;
