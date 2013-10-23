@@ -7,7 +7,13 @@ $(document).ready(function() {
     init();
 
 });
+$(document).ajaxStart(function () {
+    $("#loading-box").show();
+});
 
+$(document).ajaxComplete(function () {
+    $("#loading-box").delay(500).fadeOut(500);
+});
 function init() {
 //    test();
     eventSubmitTweet();
@@ -32,6 +38,7 @@ var map;
 var TWEET_AREA_TEXT = '#tweet-text';
 var TWEET_LIMIT = 140;
 var DISPLAYED_TAGS_LIMIT = 10;
+var INITIAL_TAGS_DISPLAY_LIMIT = 5;
 var TagListTypes = {Tags: '#', Mentions: '@'};
 var currentPosition = {'lat': 0, 'long': 0};
 
@@ -200,7 +207,11 @@ function addTagCloudToColumn(tags, header)
     {
         var itemHTML = $(cloud[i]);
         $(column).append(itemHTML);
-        $(column).children('.tag').last().addClass('tag-hidden').hide();
+        if (i < INITIAL_TAGS_DISPLAY_LIMIT)
+            $(column).children('.tag').last().addClass('tag-shown').show();
+        else
+            $(column).children('.tag').last().addClass('tag-hidden').hide();
+
     }
     eventAppendItemToTweet();
 }

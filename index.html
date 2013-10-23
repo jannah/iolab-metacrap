@@ -23,7 +23,10 @@
         </header>
     <main> 
         <div id="container">
-
+            <div id='loading-box'>
+                <h1>Loading...</h1>
+                <img src="_images/ajax-loader.gif" alt="Loading"/>
+            </div> 
             <div id="tweet-area" class="area">
                 <h1><label class="area-header">Tweet</label></h1>
                 <form id="tweet-form">
@@ -60,6 +63,7 @@
                     <li><span class="highlight-text">Specific Users</span>: Recently used hashtags and mentions for a specific user. TO use, type a username in the left username box anc click "Grab'em"</li>
                     <li><span class="highlight-text">Suggestions</span>: Recently used hashtags based on what you type in your tweet. To use, type your tweet and click "Suggest Tags"</li>
                 </ul>
+                <p>TO view the suggestions, click the '+' sign.</p>
             </div> 
             <div id="map-canvas"></div>
             <ul id="suggestions-list"></ul>

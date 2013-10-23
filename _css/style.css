@@ -66,6 +66,34 @@ main{
     width: 360px;
     float: left; 
 }
+#loading-box{
+    width:200px;
+    height:100px;
+    text-align: center;
+    border-radius:10px;
+    background-color:rgba(214,220,229,.7);
+    border:1px solid rgba(68,84,106,1);
+    position:absolute;
+    /*left: calc(50%-100px);*/
+    /*top: calc(50%-50px);*/
+    /*left: -webkit-calc(50%-100px);*/
+    /*top: -webkit-calc(50%-50px);*/
+
+    top: 300px;
+    left:700px;
+    z-index:100;
+    padding:10px;
+    display:none;
+    text-size:1em;
+    vertical-align: middle;
+    line-height: 2em;
+
+
+}
+#loading-box ig{
+    width:40px;
+    height:40px;
+}
 /* General */
 .area{
     border-radius: 10px;
@@ -191,7 +219,7 @@ main{
 #hide-site-help{
     float:right;
     font-size: 1em;
- 
+
     padding:2px;
     margin:2px
 
