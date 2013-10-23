@@ -46,8 +46,9 @@ body{
     background-color:#C0DEED;
     font-family: 'Ropa Sans', sans-serif;
 }
-input[type=button]{
-    padding:5px;
+input{
+    padding:2px;
+    margin: 2px;
 }
 
 main{
@@ -87,7 +88,9 @@ main{
 .area-header-new{
     background-color: rgba(185,218,143,1);
 }
-
+.highlight-text{
+    font-weight: bolder;
+}
 
 /* Left Side Bar */
 

@@ -365,7 +365,7 @@ function eventViewLessTags()
         {
             var tag = tags.get(m);
             $(tag).addClass('tag-hidden');
-            $(tag).addClass('tag-shown');
+            $(tag).removeClass('tag-shown');
             $(tag).hide();
         }
         return false;
