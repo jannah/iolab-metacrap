@@ -1,25 +1,19 @@
 ﻿<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<!-- Chris's comments to demonstrate merge conflict'-->
-
-<html>
+<html lang="en">
     <head>
         <title>Tweet for Dummies!</title>
         <script src="_js/jquery-1.10.2.min.js"></script>
         <script src="_js/script.js"></script>
         <script src="_js/twitterAPI.js"></script>
         <script src="_js/TwitterObjects.js"></script>
-		<script src="_js/rankFunction.js"></script>        
+        <script src="_js/rankFunction.js"></script>        
         <script type="text/javascript"
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDx5Ck9UD6oY6-vbDSPZMM5u-ilt77DvNY&sensor=false">
         </script>
+
         <link rel="stylesheet" type="text/css" href='_css/style.css'>
         <link rel="stylesheet" type="text/css" href="_css/reset.css">
-        <!--<link href='http://fonts.googleapis.com/css?family=Ropa+Sans' rel='stylesheet' type='text/css'>-->
+        <link href='http://fonts.googleapis.com/css?family=Ropa+Sans' rel='stylesheet' type='text/css'>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
     </head>
@@ -33,33 +27,42 @@ and open the template in the editor.
             <div id="tweet-area" class="area">
                 <h1><label class="area-header">Tweet</label></h1>
                 <form id="tweet-form">
-                    <textarea id="tweet-text"  placeholder="Tweet!"></textarea>
-                    <input id="tweet-tag-suggest" type="button" value="Click for Tag Suggestions" onClick="rankFunction();">
-                    <input id="tweet-submit" type="submit" value="Tweet"/>
+                    <input id="tweet-tag-suggest" type="button" value="Suggest Tags" onClick="rankFunction();"/>
+                    <input id="toggle-map-button" type="button" value="Show Map" onClick="eventToggleMap()"/>
+
+                    <textarea id="tweet-text"  placeholder="Tweet!"></textarea>        
                     <label id="tweet-length-label"></label>
+                    <input id="tweet-submit" type="submit" value="Tweet"/>
+
+
                 </form>
             </div>   
             <div id="login-area" class="area">
                 <h1><label class="area-header">Get User Tweets</label></h1>
                 <form id="login-form">
-                    <input id="logon-username" type="text" placeholder="Twitter username" value="UCBerkeley"/>
+                    <input id="logon-username" type="text" placeholder="Twitter username"/>
                     <input id="logon-password" type="hidden"/>
                     <input id="logon-submit" type="submit" value="Grab'em"/>
                 </form>
                 <br>
                 <div id="tweets-preview-feed"></div>  
-                <!--            <div id="tweets-preview-area" class="area">
-                                <h1><label class="area-header">Preview</label></h1>
-                
-                                <div id="tweets-preview-feed">
-                                </div>
-                            </div>-->
 
             </div>  
         </div>
         <div id="suggestion-area">
+            <div id="site-help">
+                <label id="hide-site-help"  onClick='eventHideSiteHelp()'>&#9587;</label>
+                <p>This web site helps users find relevant twitter hashtags and mentions based on the following:<p>
+                    <br>
+                <ul>
+                    <li><strong>Friends</strong>: Recently used hashtags and mentions from your home line (people you follow)</li>
+                    <li><strong>Nearby</strong>: Recently used hashtags and mentions within 3 miles of your current location</li>
+                    <li><strong>Specific Users</strong>: Recently used hashtags and mentions for a specific user. TO use, type a username in the left username box anc click <em> Grab'em</em></li>
+                    <li><strong>Suggestions</strong>: Recently used hashtags based on what you type in your tweet. To use, type your tweet and click tag <em>Suggest Tags</em></li>
+                </ul>
+            </div> 
             <div id="map-canvas"></div>
-            <ul></ul>
+            <ul id="suggestions-list"></ul>
         </div>  
 
     </main>

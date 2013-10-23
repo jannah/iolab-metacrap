@@ -11,17 +11,18 @@ and open the template in the editor.
 h1{
     font-size: x-large;
     font-weight: bold;
-    color: #777;
+    /*color: #777;*/
 }
 h2{
     font-size:x-large;
     font-weight: bolder;
 
 }
+
 header{
     width:100%;
     padding:20px;
-
+    font-family: 'Ropa Sans', sans-serif;
     text-align: center;
     background-color: #252525; /* Old browsers */
     /*    background: -moz-linear-gradient(top,  #7d7e7d 0%, #0e0e0e 100%);  FF3.6+ 
@@ -35,6 +36,7 @@ header{
 header h1{
     font-size:xx-large;
     color:white;
+
 }
 body{
     background-image: url(https://abs.twimg.com/images/themes/theme1/bg.png);
@@ -44,17 +46,19 @@ body{
     background-color:#C0DEED;
     font-family: 'Ropa Sans', sans-serif;
 }
+input[type=button]{
+    padding:5px;
+}
+
 main{
     width:1200px;
     overflow: auto;
-    /* padding:10px; */
-
-
-    margin: 0px auto;
+    margin: 0 auto;
     box-shadow: 2px;
     z-index: 2;
-
+    font-family: 'Ropa Sans', sans-serif;
 }
+
 #container{
     background-color: rgba(255,255,255,0.5);
     padding: 10px;
@@ -70,21 +74,24 @@ main{
 
 .area-header{
     width:100%;
-    background-color: #f9f9f9;
+    /*background-color: #f9f9f9;*/
+    /*background-color:#F9FAD2;*/
+    background-color: rgba(214,220,229,1);
     display:inline-block;
     vertical-align: middle;
     line-height: 30px;
-    /* height: 30px; */
     text-align: center;
     border-radius: 10px 10px 0 0;
+}
+
+.area-header-new{
+    background-color: rgba(185,218,143,1);
 }
 
 
 /* Left Side Bar */
 
 #login-area, #tweet-area{
-    /*margin: 0px auto;*/
-    /*position: relative;*/
     width: 100%;
     display:block;
     text-align: center;
@@ -114,8 +121,23 @@ main{
     width:100%;
 
 }
-
-
+#tweet-submit{
+    /*float:right;*/
+    display: inline-block;
+    padding: 5px 5px 5px 20px;
+    background: url('https://twitter.com/favicons/favicon.ico') 1px center no-repeat;
+    border: 1px solid #ccc;
+    margin:3px;
+}
+#tweet-submit:hover{
+    /*font-weight: bold;*/
+    /*border:3px solid #ccc;*/
+    background-color: #ccc;
+}
+#tweet-length-label{
+    margin:10px;
+    /*float:left;*/
+}
 
 /* tweetsm */
 .tweet{
@@ -124,7 +146,7 @@ main{
     padding:5%;
     text-align: left;
     width:90%;
- 
+
 }
 
 .tweet img{
@@ -142,9 +164,39 @@ main{
 .tweet p{
     font-size: .75em;
 }
+.tweet-screen-name{
+    font-size:1em;
+    margin: 0 2px;
+}
+.tweet-username{
+    font-size:1em;
+    color:rgba(68,84,106,1);
 
+    margin: 0 2px;
+}
 
 /* Suggestion Area*/
+#site-help{
+    width:94%;
+    padding:2%;
+    margin:0 2% 1% 0;
+    text-align: left;
+    border-radius:10px;
+    background-color:#F9FAD2;
+
+}
+#hide-site-help{
+    float:right;
+    font-size: 1em;
+ 
+    padding:2px;
+    margin:2px
+
+}
+#hide-site-help:hover{
+    font-weight: bolder;
+    margin:1px
+}
 .column-header{
     padding:5px;
     background-color: #1fa1fa;
@@ -161,28 +213,28 @@ main{
 #map-canvas{
 
     height: 300px;
-    width: 100%;
+    width: 98%;
     display: inline-block;
+    margin:0 2% 0 0;
     float: none;
 }
+
 .suggestion-column{
 
     text-align: center;
     display:block;
     float:left;
-    width:250px;
-    padding:0px;
-    margin: 10px 10px 0 0;
-
+    width:48%;
+    padding:0;
+    margin: 2% 2% 0 0;
 }
 
 /* tags */
 .tag{    
-    padding: 5%;
-    max-width: 90%;
+    padding: 2%;
+    max-width: 96%;
     word-wrap:  break-word;
-        ;
-    font-size: large;
+    /*font-size: large;*/
     text-align:center;
     display: inline-block;
     /*display: inline-block;*/
@@ -198,8 +250,8 @@ main{
     cursor: pointer; cursor: hand;
 }
 
-
-
 .borders{
     border: 1px solid #C0DEED;
 }
+
+

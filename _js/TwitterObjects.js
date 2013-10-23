@@ -4,52 +4,25 @@
  * and open the template in the editor.
  */
 
-/*
- $(document).ready(function() {
- //    init();
- });
- 
- function init() {
- var myTweets = [];
- for (var tweet in sampleTweets)
- {
- myTweets.push(new Tweet(sampleTweets[tweet]));
- }
- //    console.log(myTweets);
- //    getRequest();
- var randomTweets = generateTweets(100);
- addTweetsToPreview(randomTweets);
- 
- }
- */
 /**
- * 
+ * Tweet object
  * @returns {Tweet}
  */
 function Tweet(/*tweetObj */) {
-
     if (arguments.length === 1)
     {
-
         var tweetObj = arguments[0];
-
-
-        var coords = (tweetObj.coordinates) ?
+       var coords = (tweetObj.coordinates) ?
                 tweetObj.coordinates :
                 (tweetObj.geo) ?
                 tweetObj.geo[0] : null;
         if (coords)
         {
-//            console.log(coords);
             this.coordinates = {'type': coords.type,
                 'lat': coords.coordinates[0], 
                 'long': coords.coordinates[1]};
             console.log(this.coordinates);
-//            console.log(tweetObj.coordinates);
-//            console.log(tweetObj.geo);
         }
-
-
         this.created_at = tweetObj.created_at;
         this.entities = tweetObj.entities;
         this.hashtags = [];
@@ -66,7 +39,6 @@ function Tweet(/*tweetObj */) {
         this.urls = tweetObj.entities.urls;
         this.text = tweetObj.text;
         this.user = new TwitterUser(tweetObj.user);
-
     }
     else {
         this.coordinates;
@@ -78,15 +50,14 @@ function Tweet(/*tweetObj */) {
         this.text = '';
         this.user;
     }
-
     this.getHTMLFormat = getHTMLFormat;
 }
 function getHTMLFormat() {
     var str = "<div class='tweet'>";
     str += "<img src='" + this.user.profile_image_url + "'";
     str += " alt='" + this.user.screen_name + "'/>";
-    str += "<h1>" + this.user.screen_name + "</h1>  <h2>";
-    str += " " + this.user.name + "<h2><br><p>";
+    str += "<span class='tweet-screen-name'>" + this.user.screen_name + "</<span>";
+    str += "<span class='tweet-username'> (" + this.user.name + ")</span><br><p>";
     var textArray = this.text.split(' ');
     for (var i = 0, j = textArray.length; i < j; i++)
     {
@@ -100,7 +71,6 @@ function getHTMLFormat() {
 
         str += ' ';
     }
-
     str += '</p></div>';
     return str;
 }
@@ -121,7 +91,6 @@ function UserMention(/* user_mentions object*/) {
         this.indices = [];
         this.screen_name;
     }
-
 }
 
 function TwitterUser(/*user*/) {
