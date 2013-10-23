@@ -205,6 +205,11 @@ main{
 
     margin: 0 2px;
 }
+.tweet-time{
+    font-size:.75em;
+    float:right;
+    vertical-align: bottom;
+}
 
 /* Suggestion Area*/
 #site-help{

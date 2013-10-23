@@ -52,7 +52,7 @@ function getHTMLFormat()
     var str = "<div class='tweet'>";
     str += "<img src='" + this.user.profile_image_url + "'";
     str += " alt='" + this.user.screen_name + "'/>";
-    str += "<span class='tweet-screen-name'>" + this.user.screen_name + "</<span>";
+    str += "<span class='tweet-screen-name'>" + this.user.screen_name + "</span>";
     str += "<span class='tweet-username'> (" + this.user.name + ")</span><br><p>";
     var textArray = this.text.split(' ');
     for (var i = 0, j = textArray.length; i < j; i++)
@@ -67,7 +67,9 @@ function getHTMLFormat()
 
         str += ' ';
     }
-    str += '</p></div>';
+    str += '</p>';
+    str += "<label class='tweet-time'>" + getNiceTime(this.created_at);
+    str += "</label></div>";
     return str;
 }
 
@@ -111,11 +113,34 @@ function TwitterUser(/*user*/)
         this.following;
     }
 }
-
+function getNiceTime(time)
+{
+    var ints = {
+        s: 1,
+        m: 60,
+        h: 3600,
+        d: 86400,
+        w: 604800,
+        mo: 2592000,
+        y: 31536000
+    };
+    time = +new Date(time);
+    var gap = ((+new Date()) - time) / 1000,
+            amount, measure;
+    for (var i in ints) {
+        if (gap > ints[i]) {
+            measure = i;
+        }
+    }
+    amount = gap / ints[measure];
+    amount = gap > ints.day ? (Math.round(amount)) : Math.round(amount);
+    amount += measure;
+//    amount += ' ' + measure + (amount > 1 ? 's' : '');
+    return amount;
+}
 /*----------------------------------------
  *              Processing Tweets
  *---------------------------------------*/
-
 
 /**
  * convert returned twitter objects to local tweets object array
@@ -317,8 +342,7 @@ var sampleTweets = [
             "profile_background_image_url": "http://a3.twimg.com/profile_background_images/3368753/twitter_flowerbig.gif",
             "following": true,
             "screen_name": "cindyli"
-        },
-        "source": "web",
+        }, "source": "web",
         "in_reply_to_status_id": null
     },
     {
@@ -375,8 +399,7 @@ var sampleTweets = [
                         [
                             -122.35845384,
                             37.70813196
-                        ],
-                        [
+                        ], [
                             -122.35845384,
                             37.83245301
                         ],
@@ -430,8 +453,7 @@ var sampleTweets = [
     {
         "coordinates": null,
         "favorited": false,
-        "created_at": "Fri Jul 16 16:40:34 +0000 2010",
-        "truncated": false,
+        "created_at": "Fri Jul 16 16:40:34 +0000 2010", "truncated": false,
         "entities": {
             "urls": [
             ],

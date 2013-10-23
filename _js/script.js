@@ -334,9 +334,10 @@ function eventViewLessTags()
                 i++, m--)
         {
             var tag = tags.get(m);
+            $(tag).fadeOut(500);
             $(tag).addClass('tag-hidden');
             $(tag).removeClass('tag-shown');
-            $(tag).hide();
+
         }
         return false;
     });
