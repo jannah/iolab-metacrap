@@ -1,27 +1,21 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Tweet object
  * @returns {Tweet}
  */
-function Tweet(/*tweetObj */) {
+function Tweet(/*tweetObj */)
+{
     if (arguments.length === 1)
     {
         var tweetObj = arguments[0];
-       var coords = (tweetObj.coordinates) ?
+        var coords = (tweetObj.coordinates) ?
                 tweetObj.coordinates :
                 (tweetObj.geo) ?
                 tweetObj.geo[0] : null;
         if (coords)
         {
             this.coordinates = {'type': coords.type,
-                'lat': coords.coordinates[0], 
+                'lat': coords.coordinates[0],
                 'long': coords.coordinates[1]};
-            console.log(this.coordinates);
         }
         this.created_at = tweetObj.created_at;
         this.entities = tweetObj.entities;
@@ -40,7 +34,8 @@ function Tweet(/*tweetObj */) {
         this.text = tweetObj.text;
         this.user = new TwitterUser(tweetObj.user);
     }
-    else {
+    else
+    {
         this.coordinates;
         this.created_at;
         this.entities = {'hashtags': [], 'urls': [], 'user_mentions': []};
@@ -52,7 +47,8 @@ function Tweet(/*tweetObj */) {
     }
     this.getHTMLFormat = getHTMLFormat;
 }
-function getHTMLFormat() {
+function getHTMLFormat()
+{
     var str = "<div class='tweet'>";
     str += "<img src='" + this.user.profile_image_url + "'";
     str += " alt='" + this.user.screen_name + "'/>";
@@ -75,7 +71,8 @@ function getHTMLFormat() {
     return str;
 }
 
-function UserMention(/* user_mentions object*/) {
+function UserMention(/* user_mentions object*/)
+{
     if (arguments.length === 1)
     {
         var user_mention = arguments[0];
@@ -93,7 +90,8 @@ function UserMention(/* user_mentions object*/) {
     }
 }
 
-function TwitterUser(/*user*/) {
+function TwitterUser(/*user*/)
+{
     if (arguments.length === 1)
     {
         var user = arguments[0];
@@ -113,6 +111,17 @@ function TwitterUser(/*user*/) {
         this.following;
     }
 }
+
+/*----------------------------------------
+ *              Processing Tweets
+ *---------------------------------------*/
+
+
+/**
+ * convert returned twitter objects to local tweets object array
+ * @param {type} data
+ * @returns {Array|convertToTweets.tweets}
+ */
 function convertToTweets(data)
 {
     console.log(data.length + " tweets retrieved");
@@ -140,9 +149,42 @@ function addTweetsToPreview(tweets)
     $("#tweets-preview-feed").css('height', '600px')
 
 }
-
 /**
  * 
+ * @param {Array} tweets
+ * @returns {loadHashagsAndMentionsFromTweets.combined}
+ */
+function loadHashagsAndMentionsFromTweets(tweets, rankMultiplier)
+{
+    var rank = (arguments.length === 2) ? arguments[1] : 1;
+    var hashtagList = new TagList();
+    hashtagList.title = 'Hashtag List';
+    hashtagList.type = '#';
+    var mentionsList = new TagList();
+    mentionsList.title = 'Mentions List';
+    mentionsList.type = '@';
+    for (var i = 0, j = tweets.length; i < j; i++)
+    {
+        var tweet = new Tweet();
+        tweet = tweets[i];
+
+        for (var m = 0, l = tweet.user_mentions.length; m < l; m++)
+        {
+            mentionsList.addTag('@' + tweet.user_mentions[m].screen_name);
+            mentionsList.addTagLocation('@' + tweet.user_mentions[m].screen_name, tweet.coordinates);
+        }
+        for (var m = 0, l = tweet.hashtags.length; m < l; m++)
+        {
+            hashtagList.addTag('#' + tweet.hashtags[m], rank);
+            hashtagList.addTagLocation('#' + tweet.hashtags[m], tweet.coordinates);
+        }
+    }
+    var combined = {'hashtags': hashtagList,
+        'mentions': mentionsList};
+    return combined;
+}
+/**
+ * Test function to generate random tweets
  * @param {type} count
  * @returns {generateTweets.tweets|Array}
  */
@@ -172,7 +214,6 @@ function generateTweets(count)
             user_mention.name = mention;
             user_mention.screen_name = mention;
             tweet.user_mentions[m] = user_mention;
-//            tweet.entities.user_mentions.push(mention);
         }
         for (var t = 0; t < mentionCount; t++)
         {
@@ -183,9 +224,7 @@ function generateTweets(count)
             }
             while ($.inArray(hashtag, tweet.hashtags) !== -1);
             tweet.hashtags[t] = hashtag;
-//            tweet.entities.hashtags.push(hashtag);
         }
-
         tweet.text += tweet.hashtags + ' ';
         for (var k = 0, l = tweet.user_mentions.length; k < l; k++)
         {
@@ -198,7 +237,7 @@ function generateTweets(count)
 }
 
 /**
- * 
+ * Generate a random nuber
  * @param {Number} lower
  * @param {Number} upper
  * @returns {Number}
@@ -207,7 +246,7 @@ function getRandomNumber(lower, upper)
 {
     return  Math.floor((Math.random() * upper) + lower);
 }
-
+//Sample twitter object for testing
 var sampleTweets = [
     {
         "coordinates": null,

@@ -10,13 +10,14 @@
  
  */
 
-/*
- (String) username: username to lookup timeline
- (int) count: # of tweets to lookup
- return value => deferred object that when invoked returns array of tweets
- */
 
-function getHomeTimeline(count) {
+/**
+ * Get dummy user homeline 
+ * @param {type} count # of tweets to lookup
+ * @returns {unresolved} deferred object that when invoked returns status of post
+ */
+function getHomeTimeline(count) 
+{
     var api = '1.1/statuses/home_timeline';
     parameters = {"count": count};
     return callTwitterAPI(parameters, api).pipe(function(data) {
@@ -26,17 +27,16 @@ function getHomeTimeline(count) {
                 console.log("API Call Failed");
                 return [];
             });
-
 }
 
-
-/*
- (String) username: username to lookup timeline
- (int) count: # of tweets to lookup
- return value => deferred object that when invoked returns array of tweets
+/**
+ * 
+ * @param {type} username username tolookup timeline
+ * @param {type} count # of tweets to lookup
+ * @returns {unresolved}  deferred object that when invoked returns array of tweets
  */
-
-function getUserTimeline(username, count) {
+function getUserTimeline(username, count) 
+{
     var api = '1.1/statuses/user_timeline';
     parameters = {'screen_name': username, 'count': count};
 
@@ -49,22 +49,28 @@ function getUserTimeline(username, count) {
             });
 }
 
-
-/*
- (String) query_string: string to use for twitter query
- (int) count: # of tweets to lookup
- return value => deferred object that when invoked returns array of tweets
+/**
+ * 
+ * @param {type} query_string string to use for twitter query
+ * @param {type} count # of tweets to lookup
+ * @returns {jqXHR}  deferred object that when invoked returns array of tweets
  */
-
-function getSearchResults(query_string, count) {
+function getSearchResults(query_string, count) 
+{
 
     api = '1.1/search/tweets';
     parameters = {'q': urlencode(query_string), 'count': count};
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>..string " + query_string + "url encode " + urlencode(query_string));
+//    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>..string " + query_string + "url encode " + urlencode(query_string));
     return callTwitterAPI(parameters, api);
 }
-
-function getSearchResults(query_string, count, location) {
+/**
+ * @param {String} query_string string to use for twitter query
+ * @param {Number} count # of tweets to lookup
+ * @param {String} location
+ * @return {jqXHR}  deferred object that when invoked returns array of tweets
+ */
+function getSearchResults(query_string, count, location) 
+{
 
     api = '1.1/search/tweets';
     parameters = {
@@ -72,10 +78,16 @@ function getSearchResults(query_string, count, location) {
         'count': count,
         'geolocation': location
     };
-    console.log("string " + query_string + "url encode " + urlencode(query_string));
+//    console.log("string " + query_string + "url encode " + urlencode(query_string));
     return callTwitterAPI(parameters, api);
 }
-
+/**
+ * 
+ * @param {type} query_string
+ * @param {type} count
+ * @param {type} date
+ * @returns {jqXHR}
+ */
 function getSearchResultsDate(query_string, count, date) {
 
     api = '1.1/search/tweets';
@@ -110,7 +122,12 @@ function parseTwitterLocation(lat, long, radius)
 
 var CALL_USER_TIMELINE = '1.1/statuses/user_timeline';
 
-
+/**
+ * Call twitter api
+ * @param {type} parameters_input
+ * @param {type} api_input
+ * @returns {jqXHR}
+ */
 function callTwitterAPI(parameters_input, api_input) {
     var api_details = {
         parameters: parameters_input,
@@ -132,11 +149,12 @@ function callTwitterAPI(parameters_input, api_input) {
 }
 
 
-/*
- (String) status_update: string to use for twitter query    
- return value => deferred object that when invoked returns status of post
- */
 
+/**
+ * Post tweet to Twitter
+ * @param {String} status_update status_update: string to use for twitter query  
+ * @returns {jqXHR}deferred object that when invoked returns status of post
+ */
 function postTweet(status_update) {
     var api_details = {
         parameters: {"status": status_update},
@@ -157,32 +175,12 @@ function postTweet(status_update) {
 }
 
 
-
-function urlencode(str) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Philip Peterson
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +      input by: AJ
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Brett Zamir (http://brett-zamir.me)
-    // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +      input by: travc
-    // +      input by: Brett Zamir (http://brett-zamir.me)
-    // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Lars Fischer
-    // +      input by: Ratheous
-    // +      reimplemented by: Brett Zamir (http://brett-zamir.me)
-    // +   bugfixed by: Joris
-    // +      reimplemented by: Brett Zamir (http://brett-zamir.me)
-    // %          note 1: This reflects PHP 5.3/6.0+ behavior
-    // %        note 2: Please be aware that this function expects to encode into UTF-8 encoded strings, as found on
-    // %        note 2: pages served as UTF-8
-    // *     example 1: urlencode('Kevin van Zonneveld!');
-    // *     returns 1: 'Kevin+van+Zonneveld%21'
-    // *     example 2: urlencode('http://kevin.vanzonneveld.net/');
-    // *     returns 2: 'http%3A%2F%2Fkevin.vanzonneveld.net%2F'
-    // *     example 3: urlencode('http://www.google.nl/search?q=php.js&ie=utf-8&oe=utf-8&aq=t&rls=com.ubuntu:en-US:unofficial&client=firefox-a');
-    // *     returns 3: 'http%3A%2F%2Fwww.google.nl%2Fsearch%3Fq%3Dphp.js%26ie%3Dutf-8%26oe%3Dutf-8%26aq%3Dt%26rls%3Dcom.ubuntu%3Aen-US%3Aunofficial%26client%3Dfirefox-a'
+/**
+ * Encode URL string
+ *@param {string} str 
+ */
+function urlencode(str)
+{
     str = (str + '').toString();
 
     // Tilde should be allowed unescaped in future versions of PHP (as reflected below), but if you want to reflect current

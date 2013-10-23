@@ -28,14 +28,11 @@ var FRIENDS_TAGS_COLUMN = 'Friend tags';
 var FRIENDS_MENTIONS_COLUMN = 'Friend mentions';
 var NEAR_TAGS_COLUMN = 'Nearby tags';
 var NEAR_MENTIONS_COLUMN = 'Nearby mentions';
-
 var map;
-
 var TWEET_AREA_TEXT = '#tweet-text';
 var TWEET_LIMIT = 140;
 var DISPLAYED_TAGS_LIMIT = 10;
 var TagListTypes = {Tags: '#', Mentions: '@'};
-
 var currentPosition = {'lat': 0, 'long': 0};
 
 
@@ -57,41 +54,55 @@ function TagList()
     this.column;
     this.addTag = addTag;
     this.sortTags = sortTags;
-    this.addTagListToColumn = addTagListToColumn;
     this.addTagLocation = addTagLocation;
+    this.addTagList = addTagList;
 }
 
-/**
- * add this tag list to a the column specified in the list
- * @returns {undefined}
- */
-function addTagListToColumn()
-{
-    for (var i = 0, j = this.tags.length; i < j; i++)
-    {
-        addItemToColumn(this.tags[i], this.column);
-    }
-}
 
 /**
  * add a tag to the tag list and update its frequency
  * @param {type} tag
+ * @param {number} rankMultiplier (Optional)
  * @returns {undefined}
  */
-function addTag(tag)
+function addTag(tag/*, rankMultiplier*/)
 {
+    var rank = (arguments.length === 2) ? arguments[1] : 1;
     if (tag in this.tags)
     {
-        var value = this.tags[tag];
-        value++;
-        this.tags[tag] = value;
-
+//        var value = this.tags[tag];
+//        value += rank;
+        this.tags[tag] += rank;
     }
     else
-    {
-        this.tags[tag] = 1;
-    }
+        this.tags[tag] = rank;
 }
+/**
+ * adds a taglist to tags
+ * @param {TagList} tagList
+ * @param {number} rankMultiplier (Optional)
+ * @returns {undefined}
+ */
+function addTagList(tagList/*, rankMultiplier*/)
+{
+    var rank = (arguments.length === 2) ? arguments[1] : 1;
+    console.log('Rank=' + rank);
+    for (var tag in tagList.tags)
+    {
+        if (tag in this.tags)
+            this.tags[tag] += (tagList.tags[tag] * rank);
+        else
+            this.tags[tag] = (tagList.tags[tag] * rank);
+
+    }
+
+}
+/**
+ * Add tag location to list
+ * @param {type} tag
+ * @param {type} coordinates
+ * @returns {undefined}
+ */
 function addTagLocation(tag, coordinates)
 {
     if (tag in this.tagLocations)
@@ -175,20 +186,6 @@ function formatCloudTag(tags)
     return cloud;
 }
 
-/**TODO
- * Adds a text item to a column (No cloud tag)
- * @param {String} item
- * @param {String} column
- * @returns {undefined}
- */
-function addItemToColumn(item, column)
-{
-    var itemHTML = $(formatItemForList(item));
-    $(column).append(itemHTML);
-    $(column + ' li:last').hide().fadeIn(500);
-    eventAppendItemToTweet();
-}
-
 /**
  * Add a Tag Cloud to a Column
  * @param {Array} tags
@@ -208,7 +205,7 @@ function addTagCloudToColumn(tags, header)
     eventAppendItemToTweet();
 }
 /**
- * 
+ * Add a new column to suggestions
  * @param {string} header
  * @returns {jQuery}
  */
@@ -236,47 +233,6 @@ function addColumnToSuggestions(header)
     eventHideTagsColumn();
     return column;
 }
-function removeItemFromColumn(item, column) {
-
-}
-
-/*----------------------------------------
- *              Processing
- *---------------------------------------*/
-/**
- * 
- * @param {Array} tweets
- * @returns {loadHashagsAndMentionsFromTweets.combined}
- */
-function loadHashagsAndMentionsFromTweets(tweets)
-{
-    var hashtagList = new TagList();
-    hashtagList.title = 'Hashtag List';
-    hashtagList.type = '#';
-    var mentionsList = new TagList();
-    mentionsList.title = 'Mentions List';
-    mentionsList.type = '@';
-    for (var i = 0, j = tweets.length; i < j; i++)
-    {
-        var tweet = new Tweet();
-        tweet = tweets[i];
-
-        for (var m = 0, l = tweet.user_mentions.length; m < l; m++)
-        {
-            mentionsList.addTag('@' + tweet.user_mentions[m].screen_name);
-            mentionsList.addTagLocation('@' + tweet.user_mentions[m].screen_name, tweet.coordinates);
-        }
-        for (var m = 0, l = tweet.hashtags.length; m < l; m++)
-        {
-            hashtagList.addTag('#' + tweet.hashtags[m]);
-            hashtagList.addTagLocation('#' + tweet.hashtags[m], tweet.coordinates);
-        }
-    }
-    var combined = {'hashtags': hashtagList,
-        'mentions': mentionsList};
-    return combined;
-}
-
 /*----------------------------------------------
  *                  Events                      |
  *----------------------------------------------*/
@@ -312,8 +268,11 @@ function eventAppendItemToTweet()
 function eventSubmitTweet()
 {
     $('#tweet-submit').click(function() {
-        var tweet = $('#tweet-text').text();
-        alert('Submitting tweet:\n' + tweet);
+        var tweet = $('#tweet-text').val();
+        postTweet(tweet);
+        $('#tweet-text').val('');
+        return false;
+//        alert('Submitting tweet:\n' + tweet);
     });
 }
 /**
@@ -352,7 +311,6 @@ function eventViewMoreTags()
         return false;
     });
 }
-
 function eventViewLessTags()
 {
     $('.view-less-tags-button').unbind('click');
@@ -371,7 +329,8 @@ function eventViewLessTags()
         return false;
     });
 }
-function eventHideTagsColumn() {
+function eventHideTagsColumn()
+{
     $('.hide-tags-button').unbind('click');
     $('.hide-tags-button').click(function() {
         $(this).parent('.suggestion-column').fadeOut(500);
@@ -384,7 +343,6 @@ function eventHideTagsColumn() {
  */
 function eventToggleMap()
 {
-
     if ($('#map-canvas').is(':visible'))
     {
         hideMap();
@@ -394,6 +352,10 @@ function eventToggleMap()
         showMap();
     }
 }
+/**
+ * hide Site Help Box
+ * @returns {undefined}
+ */
 function eventHideSiteHelp() {
     $('#site-help').fadeOut(500);
 }
@@ -493,7 +455,7 @@ function processTweetsData(tweets, mentionColumn, hashColumn)
 {
     //      addTweetsToPreview(tweets);
     addTweetsToMap(tweets);
-    var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets);
+    var loadedTagsMentions = loadHashagsAndMentionsFromTweets(tweets, 1);
     var mentions = loadedTagsMentions.mentions;
     var hashtags = loadedTagsMentions.hashtags;
     mentions.sortTags();
@@ -667,13 +629,19 @@ function addTweetsToMap(tweets)
         }
     }
 }
-
+/**
+ * Hide the map
+ * @returns {undefined}
+ */
 function hideMap()
 {
     $('#map-canvas').fadeOut(500);
     $('#toggle-map-button').val('Show Map');
 }
-
+/**
+ * Show the map
+ * @returns {undefined}
+ */
 function showMap()
 {
     $('#map-canvas').fadeIn(500);
